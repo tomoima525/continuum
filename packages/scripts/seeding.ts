@@ -38,6 +38,7 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
     return;
   }
   const poseidonModule = await buildPoseidon();
+  let putRequests: AWS.DynamoDB.DocumentClient.WriteRequest[] = [];
   try {
     for (let level = 0; level < MERKLE_TREE_DEPTH; level++) {
       zeroHash =
@@ -46,17 +47,26 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
           : createPoseidonHash(poseidonModule, [zeroHash, zeroHash]);
       console.log({ zeroHash });
       const id = crypto.randomBytes(16).toString('hex');
-      const putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
-        TableName,
-        Item: {
-          id,
-          level,
-          hash: zeroHash,
-          createdAt: new Date().toISOString(),
+
+      const putRequest: AWS.DynamoDB.DocumentClient.WriteRequest = {
+        PutRequest: {
+          Item: {
+            id,
+            level,
+            hash: zeroHash,
+            groupId: '0',
+            createdAt: new Date().toISOString(),
+          },
         },
       };
-      await docClient.put(putParams).promise();
+      putRequests.push(putRequest);
     }
+    const putParams: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
+      RequestItems: {
+        [`${TableName}`]: putRequests,
+      },
+    };
+    await docClient.batchWrite(putParams).promise();
   } catch (e) {
     console.log('put error', e);
   }
@@ -64,7 +74,7 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
     result = (await docClient
       .query(params)
       .promise()) as AWS.DynamoDB.DocumentClient.QueryOutput;
-    console.log(`Inserted ${result.Count}items`);
+    console.log(`Inserted ${result.Count} items`);
   } catch (e) {
     console.log('=== e', e);
     return;
