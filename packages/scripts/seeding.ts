@@ -55,6 +55,7 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
             level,
             hash: zeroHash,
             groupId: '0',
+            groupName: 'ZeroHash',
             createdAt: new Date().toISOString(),
           },
         },
