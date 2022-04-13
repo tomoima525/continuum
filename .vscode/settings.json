@@ -17,9 +17,9 @@
     "**/dist/": true,
     "**/node_modules/": false,
     "**/obj": true,
-    "node_modules": true,
-    "node_modules/*/**": true,
-    "**/node_modules": true,
+    "node_modules": false,
+    "node_modules/*/**": false,
+    "**/node_modules": false,
     "yarn-error.log": true,
     "**/yarn-error.log": true,
     "packages\\eth-hooks/lib": true,
@@ -71,7 +71,6 @@
   "solidity.enabledAsYouTypeCompilationErrorCheck": true,
   "solidity.validationDelay": 1500,
   "eslint.workingDirectories": [
-    { "directory": "packages/contracts", "changeProcessCWD": true },
-    { "directory": "packages/proved-web", "changeProcessCWD": true }
+    { "directory": "packages/contracts", "changeProcessCWD": true }
   ]
 }

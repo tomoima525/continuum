@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/configs/*": ["./packages/configs/*"],
+      "@/crypto-tool/*": ["./packages/crypto-tool/*"]
+    }
+  },
+  "exclude": ["node_modules"],
+  "references": [
+    {
+      "path": "../configs"
+    },
+    {
+      "path": "../crypto-tool"
+    }
+  ]
+}
