@@ -16,14 +16,14 @@ export type Scalars = {
   AWSTimestamp: number;
   AWSURL: string;
 };
-export type Commitment = {
+export type MerkleTreeNode = {
   createdAt?: Maybe<Scalars['AWSDateTime']>;
   id: Scalars['ID'];
+  hash: Scalars['String'];
   groupId: Scalars['ID'];
   groupName: Scalars['String'];
-  hash: Scalars['String'];
   index: Scalars['Int'];
   level: Scalars['Int'];
   siblinghash?: Maybe<Scalars['String']>;
-  parent?: Maybe<Commitment>;
+  parent?: Maybe<MerkleTreeNode>;
 };
