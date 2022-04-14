@@ -16,11 +16,15 @@ export class DynamoDBSetup extends Construct {
       stream: ddb.StreamViewType.NEW_AND_OLD_IMAGES,
     });
 
-    // global secondary key for fetching nodes by groupId
+    //global secondary key for fetching nodes by groupId
     this.merkleTreeTable.addGlobalSecondaryIndex({
       indexName: 'GroupIndex',
       partitionKey: {
         name: 'groupId',
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'hash',
         type: ddb.AttributeType.STRING,
       },
       projectionType: ddb.ProjectionType.ALL,
