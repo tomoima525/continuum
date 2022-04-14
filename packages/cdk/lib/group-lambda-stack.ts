@@ -12,26 +12,35 @@ export interface GroupLambdaStackProps {
   merkleTreeTable: dynamodb.ITable;
 }
 export class GroupLambdaStack extends Construct {
-  public readonly testLambda: lambda_nodejs.NodejsFunction;
+  public readonly appendLeafLambda: lambda_nodejs.NodejsFunction;
 
   constructor(scope: Construct, id: string, props: GroupLambdaStackProps) {
     super(scope, id);
-    this.testLambda = new lambda_nodejs.NodejsFunction(this, 'test', {
-      runtime: lambda.Runtime.NODEJS_14_X,
-      handler: 'handler',
-      entry: path.join(`${__dirname}/../`, 'functions', 'test/index.ts'),
-      environment: {
-        TableName: props.merkleTreeTable.tableName,
+
+    this.appendLeafLambda = new lambda_nodejs.NodejsFunction(
+      this,
+      'appendLeaf',
+      {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: 'handler',
+        entry: path.join(
+          `${__dirname}/../`,
+          'functions',
+          'appendLeaf/index.ts',
+        ),
+        environment: {
+          TableName: props.merkleTreeTable.tableName,
+        },
+        timeout: Duration.seconds(25),
+        memorySize: 256,
+        bundling: {
+          externalModules: [
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+          ],
+        },
+        layers: [props.dbUtilLayer],
       },
-      timeout: Duration.seconds(10),
-      memorySize: 128,
-      bundling: {
-        externalModules: [
-          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
-        ],
-      },
-      layers: [props.dbUtilLayer],
-    });
-    props.merkleTreeTable.grantReadWriteData(this.testLambda);
+    );
+    props.merkleTreeTable.grantReadWriteData(this.appendLeafLambda);
   }
 }

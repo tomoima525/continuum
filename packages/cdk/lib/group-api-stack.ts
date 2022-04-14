@@ -7,7 +7,7 @@ import {
 import { deployEnv } from './envSpecific';
 
 interface GroupApiSetupProps {
-  test: lambda.NodejsFunction;
+  appendLeaf: lambda.NodejsFunction;
 }
 
 export class GroupApiSetup extends Construct {
@@ -34,9 +34,13 @@ export class GroupApiSetup extends Construct {
       },
     });
 
-    const { test } = props;
-    const nonceResource = api.root.addResource('test');
-    nonceResource.addMethod('GET', new apigateway.LambdaIntegration(test));
+    const { appendLeaf } = props;
+    const merkleTreeResource = api.root.addResource('merkleTree');
+    const appendResource = merkleTreeResource.addResource('append');
+    appendResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(appendLeaf),
+    );
 
     new CfnOutput(this, 'GroupApiUrl', { value: api.url });
   }

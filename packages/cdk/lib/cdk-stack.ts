@@ -22,7 +22,7 @@ export class CdkStack extends Stack {
 
     // API Gateway
     new GroupApiSetup(this, 'Group API', {
-      test: groupLambda.testLambda,
+      appendLeaf: groupLambda.appendLeafLambda,
     });
   }
 }
