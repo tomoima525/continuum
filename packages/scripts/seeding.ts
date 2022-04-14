@@ -46,14 +46,15 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
           ? zeroHash
           : createPoseidonHash(poseidonModule, [zeroHash, zeroHash]);
       console.log({ zeroHash });
+      // internal id
       const id = crypto.randomBytes(16).toString('hex');
 
       const putRequest: AWS.DynamoDB.DocumentClient.WriteRequest = {
         PutRequest: {
           Item: {
+            hash: zeroHash,
             id,
             level,
-            hash: zeroHash,
             groupId: '0',
             groupName: 'ZeroHash',
             createdAt: new Date().toISOString(),
