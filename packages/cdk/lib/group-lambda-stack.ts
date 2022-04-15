@@ -32,7 +32,7 @@ export class GroupLambdaStack extends Construct {
           TableName: props.merkleTreeTable.tableName,
         },
         timeout: Duration.seconds(25),
-        memorySize: 256,
+        memorySize: 1408,
         bundling: {
           externalModules: [
             'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime

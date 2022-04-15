@@ -45,7 +45,7 @@ export const LandingPage = () => {
                 {/* CTA */}
                 <div className="flex justify-center">
                   <button
-                    className=" w-1/2 md:w-64 border-transparent rounded-full p-0.5 bg-gradient-to-r from-[#F8BCFF] via-[#9A96FF] to-[#A7DCFF]"
+                    className="w-1/2 md:w-64 border-transparent rounded-full p-0.5 bg-gradient-to-r from-[#F8BCFF] via-[#9A96FF] to-[#A7DCFF]"
                     onClick={handleClaim}
                   >
                     <div className="px-6 py-3 rounded-full text-base font-medium text-white bg-proved-500 hover:bg-proved-300">
