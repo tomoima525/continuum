@@ -1,0 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  background-color: #150C1D;
+}
