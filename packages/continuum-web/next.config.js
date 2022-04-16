@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+  // fix menu issue https://github.com/tailwindlabs/headlessui/issues/681
+  reactStrictMode: false,
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

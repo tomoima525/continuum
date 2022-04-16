@@ -1,9 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getCsrfToken, signIn, signOut } from 'next-auth/react';
+import { SiweMessage } from 'siwe';
+import {
+  Connector,
+  useAccount,
+  useConnect,
+  useNetwork,
+  useSignMessage,
+} from 'wagmi';
 import { Header } from './ui/Header';
 import { useRouter } from 'next/router';
 import { Notification } from './ui/Notification';
 import { useNotificationState } from 'contexts/NotificationContext';
-import { Connector } from 'wagmi';
 
 export const Layout = ({
   children,
@@ -14,22 +22,60 @@ export const Layout = ({
 }) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const router = useRouter();
+  const [, signMessage] = useSignMessage();
+  const [{ data: networkData }] = useNetwork();
   const notificationState = useNotificationState();
-  const loading = false;
+  const [{ data: connectData, error: connectError }, connect] = useConnect();
+  const [{ data: accountData, error: accountError }, disconnect] = useAccount();
 
-  const handleLoginRequest = async (address: string, connector: Connector) => {
+  useEffect(() => {
+    if (accountError) {
+      console.log({ accountError });
+    }
+    if (connectError) {
+      console.log({ connectError });
+    }
+  }, [accountError, connectError]);
+
+  const handleLoginRequest = async () => {
     setIsLoggingIn(true);
-
+    const connector = connectData.connectors.filter(
+      connector => connector.name === 'MetaMask',
+    );
+    await connect(connector[0]);
     try {
-      // TODO: store minimum user info
-      // await login(address, connector);
-    } catch {
+      const message = new SiweMessage({
+        domain: window.location.host,
+        address: accountData?.address,
+        statement: 'Sign in with Ethereum to the app.',
+        uri: window.location.origin,
+        version: '1',
+        chainId: networkData?.chain?.id,
+        nonce: await getCsrfToken(),
+      });
+      const { data: signature, error } = await signMessage({
+        message: message.prepareMessage(),
+      });
+      if (error) {
+        window.alert(error);
+        return;
+      }
+      signIn('credentials', {
+        message: JSON.stringify(message),
+        redirect: false,
+        signature,
+        callbackUrl: '/home',
+      });
+    } catch (error) {
+      window.alert(error);
     } finally {
       setIsLoggingIn(false);
     }
   };
 
   const handleSignOut = async () => {
+    disconnect();
+    signOut();
     router.replace('/');
   };
 
@@ -73,13 +119,11 @@ export const Layout = ({
       {notificationState.show && (
         <Notification content={notificationState.content} />
       )}
-      {loading && (
-        <div className="inline-block align-bottom bg-black rounded-lg text-left overflow-hidden shadow-xl transform sm:my-2 sm:align-middle sm:p-6">
+      {/* <div className="inline-block align-bottom bg-black rounded-lg text-left overflow-hidden shadow-xl transform sm:my-2 sm:align-middle sm:p-6">
           <div className="flex justify-center self-center">
             <div className="animate-spin rounded-full h-24 w-24 border-t-2 border-b-2 border-indigo-500" />
           </div>
-        </div>
-      )}
+        </div> */}
     </>
   );
 };
