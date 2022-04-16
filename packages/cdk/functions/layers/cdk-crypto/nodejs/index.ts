@@ -1,5 +1,5 @@
 // @ts-ignore
-import { buildPoseidon } from 'circomlibjs';
+import { buildPoseidon, buildPoseidonOpt } from 'circomlibjs';
 import { createPoseidonHash } from './poseidon';
 
-export { createPoseidonHash, buildPoseidon };
+export { createPoseidonHash, buildPoseidon, buildPoseidonOpt };

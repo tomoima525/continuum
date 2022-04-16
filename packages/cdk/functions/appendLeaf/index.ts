@@ -12,7 +12,7 @@ import {
   nodesQueryByGroup,
   nodesTxWrite,
 } from '/opt/nodejs/dynamodb-utils';
-import { buildPoseidon, createPoseidonHash } from '/opt/nodejs/cdk-crypto';
+import { buildPoseidonOpt, createPoseidonHash } from '/opt/nodejs/cdk-crypto';
 import { MerkleTreeNode } from '@/types';
 
 const headers = {
@@ -81,7 +81,7 @@ export const handler = async function (
   console.log('node created', node);
   console.log('Inserting in:', currentIndex);
 
-  const poseidonModule = await buildPoseidon();
+  const poseidonModule = await buildPoseidonOpt();
   console.log('Module ready');
 
   for (let level = 0; level < MERKLE_TREE_DEPTH; level++) {
