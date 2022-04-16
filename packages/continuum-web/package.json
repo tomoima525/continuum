@@ -11,10 +11,13 @@
   "dependencies": {
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
+    "@next-auth/dynamodb-adapter": "^1.0.3",
     "ethers": "^5.6.4",
     "next": "12.1.5",
+    "next-auth": "^4.3.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "siwe": "^1.1.6",
     "wagmi": "^0.2.26"
   },
   "devDependencies": {

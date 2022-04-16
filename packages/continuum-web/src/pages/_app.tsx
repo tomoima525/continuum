@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import { SessionProvider } from 'next-auth/react';
 import { providers } from 'ethers';
 import { InjectedConnector, Provider, chain } from 'wagmi';
 import { NotificationProvider } from 'contexts/NotificationContext';
@@ -27,19 +28,21 @@ const connectors = ({ chainId }: { chainId?: number }) => {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider connectors={connectors} provider={provider}>
-      <UserContextProvider>
-        <NotificationProvider>
-          <Seo
-            imgHeight={768}
-            imgWidth={1024}
-            imgUrl="/proved-ogp.jpeg"
-            path="https://usecontinuum.app"
-            title="Proved"
-            pageDescription="Prove your work credentials with privacy."
-          />
-          <Component {...pageProps} />
-        </NotificationProvider>
-      </UserContextProvider>
+      <SessionProvider session={pageProps.session} refetchInterval={0}>
+        <UserContextProvider>
+          <NotificationProvider>
+            <Seo
+              imgHeight={768}
+              imgWidth={1024}
+              imgUrl="/proved-ogp.jpeg"
+              path="https://usecontinuum.app"
+              title="Continuum"
+              pageDescription="Prove your work credentials with privacy."
+            />
+            <Component {...pageProps} />
+          </NotificationProvider>
+        </UserContextProvider>
+      </SessionProvider>
     </Provider>
   );
 }

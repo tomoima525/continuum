@@ -1,18 +1,15 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { Connector, useAccount, useConnect } from 'wagmi';
 import { useUser } from 'contexts/UserContext';
 import { shortenName } from 'utils/userName';
 import { GradientBtn } from './GradientBtn';
+import { useSession } from 'next-auth/react';
 
-const userNavigation = [
-  { name: 'Profile', href: '/profile', id: 'profile' },
-  { name: 'Disconnect', href: '/', id: 'disconnect' },
-];
+const userNavigation = [{ name: 'Disconnect', href: '/', id: 'disconnect' }];
 
 function classNames(...classes: unknown[]) {
   return classes.filter(Boolean).join(' ');
@@ -24,47 +21,23 @@ export const Header = ({
   onSignOutRequested,
 }: {
   isLoggingIn: boolean;
-  onLoginRequested: (address: string, connector: Connector) => Promise<void>;
+  onLoginRequested: () => Promise<void>;
   onSignOutRequested: () => void;
 }) => {
-  const user = useUser();
-  const [{ data, error }, connect] = useConnect();
-  const [{ error: accountError }, disconnect] = useAccount();
-
-  useEffect(() => {
-    if (error) {
-      console.log('====', error);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (accountError) {
-      console.log('====acc', accountError);
-    }
-  }, [accountError]);
+  // const user = useUser();
+  const session = useSession();
 
   const handleConnectBtn = async () => {
-    // TODO: handle this somewhere else
-    // Metamask
-    const connector = data.connectors.filter(
-      connector => connector.name === 'MetaMask',
-    );
-    console.log(connector);
-    const result = await connect(connector[0]);
-    console.log(result);
-    if (result?.data?.account) {
-      await onLoginRequested(result.data.account, connector[0]);
-    }
+    await onLoginRequested();
   };
 
   const handleSignOut = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    disconnect();
     onSignOutRequested();
   };
-
+  console.log({ session });
   return (
     <Disclosure as="nav" className="bg-proved-500">
       {({ open }) => (
@@ -72,11 +45,14 @@ export const Header = ({
           <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex">
-                <Link href={user?.isAuthenticated ? '/home' : '/'} passHref>
+                <Link
+                  href={session.status === 'authenticated' ? '/home' : '/'}
+                  passHref
+                >
                   <a className="flex-shrink-0 flex items-center">
                     <Image
-                      width={144}
-                      height={39}
+                      width={196}
+                      height={24}
                       src="/continuum-logo.svg"
                       alt="Logo"
                     />
@@ -96,21 +72,22 @@ export const Header = ({
                   </Disclosure.Button>
                 </div>
                 {/** user.isAuthenticated */}
-                {user.isAuthenticated ? (
+                {session.status === 'authenticated' ? (
                   <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                       <div>
                         <Menu.Button className="bg-gray-800 flex text-sm rounded-full ">
                           <GradientBtn
-                            onClick={() => {
-                              // Do nothing
+                            onClick={async e => {
+                              // await handleSignOut(e);
                             }}
                           >
-                            {shortenName(user.data?.address || '')}
+                            {shortenName(session.data.user?.name || '')}
                           </GradientBtn>
                         </Menu.Button>
                       </div>
+                      V{' '}
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
@@ -174,30 +151,20 @@ export const Header = ({
               </div>
             </div>
           </div>
-
+          {/** Mobile Dropdown */}
           <Disclosure.Panel className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {user.isAuthenticated ? (
+              {session.status === 'authenticated' ? (
                 <div className="flex-shrink-0">
                   <GradientBtn
                     onClick={() => {
                       // Do nothing
                     }}
                   >
-                    {shortenName(user.data?.name || '')}
+                    {shortenName(session.data.user?.name || '')}
                   </GradientBtn>
 
                   <div className="pt-4 pb-3 border-t border-gray-700">
-                    <div className="flex items-center px-5 sm:px-6">
-                      <div className="ml-3">
-                        <div className="text-base font-medium text-white">
-                          {shortenName(user.data?.id)}
-                        </div>
-                        <div className="text-sm font-medium text-gray-400">
-                          {user.data?.email || ''}
-                        </div>
-                      </div>
-                    </div>
                     <div className="mt-3 px-2 space-y-1 sm:px-3">
                       {userNavigation.map(item => {
                         if (item.id === 'disconnect') {
