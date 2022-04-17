@@ -10,10 +10,6 @@ export class DynamoDBSetup extends Construct {
     this.continuumTable = new ddb.Table(this, 'Continuum', {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
-        name: 'model',
-        type: ddb.AttributeType.STRING,
-      },
-      sortKey: {
         name: 'id',
         type: ddb.AttributeType.STRING,
       },

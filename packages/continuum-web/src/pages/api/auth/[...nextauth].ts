@@ -75,7 +75,9 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         };
         return newSession;
       },
-      async jwt({ token }) {
+      async jwt({ token, user, account, profile }) {
+        console.log({ token, user, account, profile });
+        // TODO: store user data(address)
         return token;
       },
     },

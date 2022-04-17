@@ -36,7 +36,7 @@ const nodeGetByHash = async (
 };
 
 async function main() {
-  const tableName = 'CdkStack-dev-DynamoDBContinuumCE168742-1EQMJIGSP0D7V';
+  const tableName = 'CdkStack-dev-DynamoDBContinuumCE168742-T43BFABPMSO7';
 
   const r = await nodeGetByHash('0', '0', tableName);
   console.log('===', r);

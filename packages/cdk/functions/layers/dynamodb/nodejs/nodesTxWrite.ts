@@ -33,7 +33,7 @@ export const createNodeUpdate = ({
   return {
     Update: {
       ...props,
-      Key: { id, model: MODEL_MERKLE_TREE },
+      Key: { id },
       TableName,
     },
   };

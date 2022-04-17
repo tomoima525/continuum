@@ -52,13 +52,12 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
       const putRequest: AWS.DynamoDB.DocumentClient.WriteRequest = {
         PutRequest: {
           Item: {
+            id: `MerkleTree#${id}`,
             hash: zeroHash,
-            id,
             level,
             groupId: '0',
             groupName: 'ZeroHash',
             createdAt: new Date().toISOString(),
-            model: 'MerkleTree',
           },
         },
       };

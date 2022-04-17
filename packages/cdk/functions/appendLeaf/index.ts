@@ -63,7 +63,7 @@ export const handler = async function (
   const id = crypto.randomBytes(16).toString('hex');
   let node = {
     hash: identityCommitment,
-    id,
+    id: `${MODEL_MERKLE_TREE}#${id}`,
     index: currentIndex,
     level: 0,
     groupId,
@@ -71,7 +71,6 @@ export const handler = async function (
     siblinghash: null,
     parent: null,
     createdAt: new Date().toISOString(),
-    model: MODEL_MERKLE_TREE,
   } as MerkleTreeNode;
 
   nodePut({
@@ -124,7 +123,7 @@ export const handler = async function (
             node.hash,
             node?.siblinghash,
           ]),
-          id: crypto.randomBytes(16).toString('hex'),
+          id: `${MODEL_MERKLE_TREE}#${crypto.randomBytes(16).toString('hex')}`,
           index: Math.floor(currentIndex / 2),
           level: level + 1,
           groupId,
@@ -132,7 +131,6 @@ export const handler = async function (
           siblinghash: null,
           parent: null,
           createdAt: new Date().toISOString(),
-          model: MODEL_MERKLE_TREE,
         };
         tx.push(
           createNodePut({
