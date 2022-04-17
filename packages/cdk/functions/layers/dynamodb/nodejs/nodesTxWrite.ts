@@ -1,3 +1,4 @@
+import { MODEL_MERKLE_TREE } from '@/configs';
 import * as AWS from 'aws-sdk';
 const docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -32,7 +33,7 @@ export const createNodeUpdate = ({
   return {
     Update: {
       ...props,
-      Key: { id },
+      Key: { id, model: MODEL_MERKLE_TREE },
       TableName,
     },
   };

@@ -2,7 +2,7 @@ import { seedZeroHashes } from './seeding';
 
 async function main() {
   const result = await seedZeroHashes(
-    'CdkStack-dev-DynamoDBMerkleTree8A62F92F-675JA7NPNV',
+    'CdkStack-dev-DynamoDBContinuumCE168742-1EQMJIGSP0D7V',
   );
 }
 
