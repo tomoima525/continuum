@@ -1,8 +1,20 @@
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getCsrfToken } from 'next-auth/react';
 import { SiweMessage } from 'siwe';
+
+const config: DynamoDBClientConfig = {
+  credentials: {
+    accessKeyId: process.env.NEXT_AUTH_AWS_ACCESS_KEY as string,
+    secretAccessKey: process.env.NEXT_AUTH_AWS_SECRET_KEY as string,
+  },
+  region: process.env.NEXT_AUTH_AWS_REGION,
+};
+
+const docClient = DynamoDBDocument.from(new DynamoDBClient(config));
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -37,6 +49,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           }
 
           await siwe.validate(credentials?.signature || '');
+          // TODO: authorize openIdConnect here for IAM API access
           return {
             id: siwe.address,
           };
@@ -76,8 +89,40 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         return newSession;
       },
       async jwt({ token, user, account, profile }) {
-        console.log({ token, user, account, profile });
-        // TODO: store user data(address)
+        if (account) {
+          let userExists = false;
+          try {
+            const getParams = {
+              TableName: process.env.NEXT_AUTH_AWS_TABLE,
+              Key: {
+                id: `User#${account.providerAccountId}`,
+              },
+            };
+            const u = await docClient.get(getParams);
+            if (u.Item) {
+              userExists = true;
+            }
+          } catch (e) {
+            console.log('Get: Something is wrong', e);
+          }
+
+          if (userExists) return token;
+
+          // store user data(address)
+          try {
+            const params = {
+              TableName: process.env.NEXT_AUTH_AWS_TABLE,
+              Item: {
+                id: `User#${account.providerAccountId}`,
+                address: account.providerAccountId,
+                createdAt: new Date().toISOString(),
+              },
+            };
+            await docClient.put(params);
+          } catch (e) {
+            console.log('Put: Something is wrong', e);
+          }
+        }
         return token;
       },
     },
