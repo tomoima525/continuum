@@ -1231,11 +1231,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@next-auth/dynamodb-adapter@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@next-auth/dynamodb-adapter/-/dynamodb-adapter-1.0.3.tgz#a0a8c227e1cfb3c9a6994b0bf3700d7ca6bc046c"
-  integrity sha512-GKG9O2xkkTkhQKuOebBJgJ977oOE6a9i6iWhk7dS3OCdQvfCbrsdDIwGoPziLq3Ei3JjMl7+tKV1tBGgbSIIEQ==
-
 "@next/env@12.1.5":
   version "12.1.5"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-12.1.5.tgz#a21ba6708022d630402ca2b340316e69a0296dfc"

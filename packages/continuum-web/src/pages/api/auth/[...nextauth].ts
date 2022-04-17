@@ -3,15 +3,6 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getCsrfToken } from 'next-auth/react';
 import { SiweMessage } from 'siwe';
-import { DynamoDBAdapter } from '@next-auth/dynamodb-adapter';
-
-// const config: DynamoDBClientConfig = {
-//   credentials: {
-//     accessKeyId: process.env.NEXT_AUTH_AWS_ACCESS_KEY as string,
-//     secretAccessKey: process.env.NEXT_AUTH_AWS_SECRET_KEY as string,
-//   },
-//   region: process.env.NEXT_AUTH_AWS_REGION,
-// };
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
