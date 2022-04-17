@@ -17,7 +17,7 @@ export class CdkStack extends Stack {
     // Lambda
     const groupLambda = new GroupLambdaStack(this, 'GroupLambda', {
       dbUtilLayer: layer.dbUtilLayer,
-      merkleTreeTable: dynamoDBStack.merkleTreeTable,
+      continuumTable: dynamoDBStack.continuumTable,
     });
 
     // API Gateway

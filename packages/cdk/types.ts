@@ -26,4 +26,5 @@ export type MerkleTreeNode = {
   level: Scalars['Int'];
   siblinghash?: Maybe<Scalars['String']>;
   parent?: Maybe<MerkleTreeNode>;
+  model: Scalars['String'];
 };

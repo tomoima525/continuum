@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { MERKLE_TREE_DEPTH } from '@/configs';
+import { MERKLE_TREE_DEPTH, MODEL_MERKLE_TREE } from '@/configs';
 import {
   createNodePut,
   createNodeUpdate,
@@ -71,6 +71,7 @@ export const handler = async function (
     siblinghash: null,
     parent: null,
     createdAt: new Date().toISOString(),
+    model: MODEL_MERKLE_TREE,
   } as MerkleTreeNode;
 
   nodePut({
@@ -131,6 +132,7 @@ export const handler = async function (
           siblinghash: null,
           parent: null,
           createdAt: new Date().toISOString(),
+          model: MODEL_MERKLE_TREE,
         };
         tx.push(
           createNodePut({

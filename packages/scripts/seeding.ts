@@ -58,6 +58,7 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
             groupId: '0',
             groupName: 'ZeroHash',
             createdAt: new Date().toISOString(),
+            model: 'MerkleTree',
           },
         },
       };

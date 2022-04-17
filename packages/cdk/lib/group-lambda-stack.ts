@@ -9,7 +9,7 @@ import { Construct } from 'constructs';
 
 export interface GroupLambdaStackProps {
   dbUtilLayer: lambda.LayerVersion;
-  merkleTreeTable: dynamodb.ITable;
+  continuumTable: dynamodb.ITable;
 }
 export class GroupLambdaStack extends Construct {
   public readonly appendLeafLambda: lambda_nodejs.NodejsFunction;
@@ -29,7 +29,7 @@ export class GroupLambdaStack extends Construct {
           'appendLeaf/index.ts',
         ),
         environment: {
-          TableName: props.merkleTreeTable.tableName,
+          TableName: props.continuumTable.tableName,
         },
         timeout: Duration.seconds(25),
         memorySize: 1408,
@@ -41,6 +41,6 @@ export class GroupLambdaStack extends Construct {
         layers: [props.dbUtilLayer],
       },
     );
-    props.merkleTreeTable.grantReadWriteData(this.appendLeafLambda);
+    props.continuumTable.grantReadWriteData(this.appendLeafLambda);
   }
 }

@@ -2,14 +2,18 @@ import { aws_dynamodb as ddb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export class DynamoDBSetup extends Construct {
-  public readonly merkleTreeTable: ddb.Table;
+  public readonly continuumTable: ddb.Table;
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    this.merkleTreeTable = new ddb.Table(this, 'MerkleTree', {
+    this.continuumTable = new ddb.Table(this, 'Continuum', {
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
+        name: 'model',
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
         name: 'id',
         type: ddb.AttributeType.STRING,
       },
@@ -17,7 +21,7 @@ export class DynamoDBSetup extends Construct {
     });
 
     //global secondary key for fetching nodes by groupId
-    this.merkleTreeTable.addGlobalSecondaryIndex({
+    this.continuumTable.addGlobalSecondaryIndex({
       indexName: 'GroupIndex',
       partitionKey: {
         name: 'groupId',
