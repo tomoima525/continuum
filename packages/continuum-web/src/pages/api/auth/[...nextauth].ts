@@ -2,9 +2,13 @@ import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
+import GithubProviders from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getCsrfToken } from 'next-auth/react';
+import mapGithubProfile from 'oauth/mapGithubProfile';
 import { SiweMessage } from 'siwe';
+import { User } from 'types';
+import { JWT } from 'next-auth/jwt';
 
 const config: DynamoDBClientConfig = {
   credentials: {
@@ -20,6 +24,11 @@ const docClient = DynamoDBDocument.from(new DynamoDBClient(config));
 // https://next-auth.js.org/configuration/options
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   const providers = [
+    GithubProviders({
+      clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET || '',
+      profile: mapGithubProfile,
+    }),
     CredentialsProvider({
       name: 'Ethereum',
       credentials: {
@@ -75,21 +84,9 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       colorScheme: 'light',
     },
     callbacks: {
-      async session({ session, token }) {
-        console.log('==== called', session, token);
-        const user = {
-          name: token.sub,
-          image: 'https://www.fillmurray.com/128/128',
-        };
-        const newSession = {
-          ...session,
-          address: token.sub,
-          user,
-        };
-        return newSession;
-      },
-      async jwt({ token, user, account, profile }) {
-        if (account) {
+      async signIn({ user, account, profile }) {
+        // store remotely if it's wallet signin
+        if (account.provider === 'credentials') {
           let userExists = false;
           try {
             const getParams = {
@@ -106,7 +103,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             console.log('Get: Something is wrong', e);
           }
 
-          if (userExists) return token;
+          if (userExists) return true;
 
           // store user data(address)
           try {
@@ -123,7 +120,39 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             console.log('Put: Something is wrong', e);
           }
         }
-        return token;
+        return true;
+      },
+      async session({ session, token }) {
+        if (token?.github) {
+          return {
+            ...session,
+            github: token.github,
+          };
+        }
+        const user = {
+          name: token.sub,
+        };
+
+        const newSession = {
+          ...session,
+          address: token.sub,
+          user,
+        };
+        return newSession;
+      },
+      async jwt({ token, user }) {
+        let newToken: JWT;
+        if (user?.gitub) {
+          newToken = {
+            ...token,
+            github: user.github,
+          };
+        } else {
+          newToken = {
+            ...token,
+          };
+        }
+        return newToken;
       },
     },
     session: {
