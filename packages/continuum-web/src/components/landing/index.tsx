@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useUser } from 'contexts/UserContext';
 import { useRouter } from 'next/router';
 
 import { ArrowRightIcon } from '@heroicons/react/solid';
@@ -9,7 +8,6 @@ import provedCard from '../../../public/card.png';
 
 export const LandingPage = () => {
   const router = useRouter();
-  const user = useUser();
 
   const handleClaim = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

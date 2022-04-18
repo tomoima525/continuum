@@ -1,13 +1,13 @@
 import type { NextPage } from 'next';
 import { Layout } from 'components/Layout';
-import { useUser } from 'contexts/UserContext';
 import { useRouter } from 'next/router';
 import { LandingPage } from 'components/landing';
+import { useSession } from 'next-auth/react';
 
 const Main: NextPage = () => {
-  const user = useUser();
+  const session = useSession();
   const router = useRouter();
-  if (user.loading) {
+  if (session.status === 'loading') {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-screen bg-black">
@@ -20,8 +20,8 @@ const Main: NextPage = () => {
       </Layout>
     );
   }
-
-  if (user.isAuthenticated) {
+  console.log('===== ', { session });
+  if (session.status === 'authenticated') {
     router.replace('/home');
     return null;
   }

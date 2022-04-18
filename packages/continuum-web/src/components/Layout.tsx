@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getCsrfToken, signIn, signOut } from 'next-auth/react';
 import { SiweMessage } from 'siwe';
-import {
-  Connector,
-  useAccount,
-  useConnect,
-  useNetwork,
-  useSignMessage,
-} from 'wagmi';
+import { useAccount, useConnect, useNetwork, useSignMessage } from 'wagmi';
 import { Header } from './ui/Header';
 import { useRouter } from 'next/router';
 import { Notification } from './ui/Notification';
@@ -37,12 +31,17 @@ export const Layout = ({
     }
   }, [accountError, connectError]);
 
+  useEffect(() => {
+    if (!connectData.connected) {
+      const connector = connectData.connectors.filter(
+        connector => connector.name === 'MetaMask',
+      );
+      connect(connector[0]);
+    }
+  }, [connect, connectData.connected, connectData.connectors]);
+
   const handleLoginRequest = async () => {
     setIsLoggingIn(true);
-    const connector = connectData.connectors.filter(
-      connector => connector.name === 'MetaMask',
-    );
-    await connect(connector[0]);
     try {
       const message = new SiweMessage({
         domain: window.location.host,
