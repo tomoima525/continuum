@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-import { useUser } from 'contexts/UserContext';
 import { shortenName } from 'utils/userName';
 import { GradientBtn } from './GradientBtn';
 import { useSession } from 'next-auth/react';
@@ -24,7 +23,6 @@ export const Header = ({
   onLoginRequested: () => Promise<void>;
   onSignOutRequested: () => void;
 }) => {
-  // const user = useUser();
   const session = useSession();
 
   const handleConnectBtn = async () => {
@@ -37,7 +35,6 @@ export const Header = ({
     e.preventDefault();
     onSignOutRequested();
   };
-  console.log({ session });
   return (
     <Disclosure as="nav" className="bg-proved-500">
       {({ open }) => (
@@ -87,7 +84,6 @@ export const Header = ({
                           </GradientBtn>
                         </Menu.Button>
                       </div>
-                      V{' '}
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
