@@ -74,8 +74,7 @@ export const Layout = ({
 
   const handleSignOut = async () => {
     disconnect();
-    signOut();
-    router.replace('/');
+    await signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_URL}` });
   };
 
   return (

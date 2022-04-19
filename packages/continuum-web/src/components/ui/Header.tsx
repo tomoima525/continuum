@@ -21,7 +21,7 @@ export const Header = ({
 }: {
   isLoggingIn: boolean;
   onLoginRequested: () => Promise<void>;
-  onSignOutRequested: () => void;
+  onSignOutRequested: () => Promise<void>;
 }) => {
   const session = useSession();
 
@@ -29,11 +29,11 @@ export const Header = ({
     await onLoginRequested();
   };
 
-  const handleSignOut = (
+  const handleSignOut = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    onSignOutRequested();
+    await onSignOutRequested();
   };
   return (
     <Disclosure as="nav" className="bg-proved-500">

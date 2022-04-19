@@ -1,11 +1,27 @@
 import { GradientBtn } from 'components/ui/GradientBtn';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useVerify } from 'hooks/useVerify';
+import { useEffect } from 'react';
 
 export const Home = () => {
   const router = useRouter();
   const session = useSession();
+  const [{ data: githubdata }, verifygithub] = useVerify();
+  const code = router.query.code as string;
+
+  useEffect(() => {
+    console.log({ code });
+    if (code) {
+      // Start verification to refresh user data
+      verifygithub({ code }).catch(e => {
+        console.log(e);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code]);
 
   // TODO: fetch user's commitment
   // useEffect(() => {
@@ -30,10 +46,7 @@ export const Home = () => {
   //   }
   // };
 
-  const handleAuthGithub = async () => {
-    await signIn('github');
-  };
-
+  console.log({ session, githubdata });
   return (
     <div className="max-w-7xl mx-auto py-10 md:py-3 h-full bg-proved-500">
       <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-row justify-between">
@@ -46,20 +59,25 @@ export const Home = () => {
             generating your proof.
           </p>
         </div>
-        <GradientBtn onClick={handleAuthGithub}>
-          <div className="flex flex-row gap-2 items-center">
-            <p>Authenticate Github</p>
-            <Image
-              src="/GitHub-Mark-64px.png"
-              alt="github"
-              className="rounded-2xl absolute z-10"
-              layout="intrinsic"
-              width={32}
-              height={32}
-              draggable="false"
-            />
-          </div>
-        </GradientBtn>
+        <Link
+          passHref
+          href={process.env.NEXT_PUBLIC_GITHUB_AUTH_LINK as string}
+        >
+          <GradientBtn onClick={() => {}}>
+            <div className="flex flex-row gap-2 items-center">
+              <p>Authenticate Github</p>
+              <Image
+                src="/GitHub-Mark-64px.png"
+                alt="github"
+                className="rounded-2xl absolute z-10"
+                layout="intrinsic"
+                width={32}
+                height={32}
+                draggable="false"
+              />
+            </div>
+          </GradientBtn>
+        </Link>
       </div>
       <header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
