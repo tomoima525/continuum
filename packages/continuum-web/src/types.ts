@@ -1,3 +1,5 @@
+import { LargeNumberLike } from 'crypto';
+
 export interface AuthData {
   id: string;
   email: string;
@@ -18,7 +20,12 @@ export interface User extends Record<string, any> {
 }
 
 export interface GithubParameters {
+  created_at: string;
   followers?: number;
-  receivedStars?: number;
+  owned_private_repos: number;
   proPlan?: boolean;
+  public_repos: number;
+  receivedStars?: number;
 }
+
+export type GithubUser = User & GithubParameters;
