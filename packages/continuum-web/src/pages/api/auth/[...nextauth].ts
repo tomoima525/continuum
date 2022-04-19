@@ -2,13 +2,9 @@ import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
-import GithubProviders from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getCsrfToken } from 'next-auth/react';
-import mapGithubProfile from 'oauth/mapGithubProfile';
 import { SiweMessage } from 'siwe';
-import { User } from 'types';
-import { JWT } from 'next-auth/jwt';
 
 const config: DynamoDBClientConfig = {
   credentials: {
@@ -24,11 +20,6 @@ const docClient = DynamoDBDocument.from(new DynamoDBClient(config));
 // https://next-auth.js.org/configuration/options
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   const providers = [
-    GithubProviders({
-      clientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID || '',
-      clientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET || '',
-      profile: mapGithubProfile,
-    }),
     CredentialsProvider({
       name: 'Ethereum',
       credentials: {
@@ -122,37 +113,20 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         }
         return true;
       },
-      async session({ session, token }) {
-        if (token?.github) {
-          return {
-            ...session,
-            github: token.github,
+      async session({ session, token, user }) {
+        if (token.sub?.startsWith('0x')) {
+          const newUser = {
+            name: token.sub,
           };
-        }
-        const user = {
-          name: token.sub,
-        };
 
-        const newSession = {
-          ...session,
-          address: token.sub,
-          user,
-        };
-        return newSession;
-      },
-      async jwt({ token, user }) {
-        let newToken: JWT;
-        if (user?.gitub) {
-          newToken = {
-            ...token,
-            github: user.github,
+          const newSession = {
+            ...session,
+            address: token.sub,
+            user: newUser,
           };
-        } else {
-          newToken = {
-            ...token,
-          };
+          return newSession;
         }
-        return newToken;
+        return session;
       },
     },
     session: {

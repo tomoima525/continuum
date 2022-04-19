@@ -20,7 +20,6 @@ const Main: NextPage = () => {
       </Layout>
     );
   }
-  console.log('===== ', { session });
   if (session.status === 'authenticated') {
     router.replace('/home');
     return null;
