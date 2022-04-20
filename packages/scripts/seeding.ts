@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 import crypto from 'crypto';
 import { MERKLE_TREE_DEPTH } from '../configs/index';
-import { buildPoseidon, createPoseidonHash } from '../crypto-tool';
+import { buildPoseidonOpt, createPoseidonHash } from '../crypto-tool';
 
 // use your local profile
 const credentials = new AWS.SharedIniFileCredentials({ profile: 'knot' });
@@ -37,7 +37,7 @@ export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
     console.log('Zero seeds exists');
     return;
   }
-  const poseidonModule = await buildPoseidon();
+  const poseidonModule = await buildPoseidonOpt();
   let putRequests: AWS.DynamoDB.DocumentClient.WriteRequest[] = [];
   try {
     for (let level = 0; level < MERKLE_TREE_DEPTH; level++) {
