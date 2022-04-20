@@ -1,33 +1,35 @@
-import * as AWS from 'aws-sdk';
 import { MerkleTreeNode } from '@/types';
-
+import * as AWS from 'aws-sdk';
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-export const nodeGetByHash = async (
-  hash: string,
+export const nodesQuery = async (
   groupId: string,
+  level: number,
   TableName: string,
-): Promise<MerkleTreeNode> => {
+): Promise<MerkleTreeNode[]> => {
   const params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName,
     IndexName: 'GroupIndex',
     KeyConditionExpression: 'groupId = :id',
-    FilterExpression: '#h = :hash',
+    FilterExpression: '#l = :l',
     ExpressionAttributeNames: {
-      '#h': 'hash',
+      '#l': 'level',
     },
     ExpressionAttributeValues: {
       ':id': groupId,
-      ':hash': hash,
+      ':l': level,
     },
   };
   const r = await docClient.query(params).promise();
   if (!r.Items?.length) {
     throw new Error('no value');
   }
-  const parent = AWS.DynamoDB.Converter.output(r.Items[0].parent);
-  return {
-    ...r.Items[0],
-    parent,
-  } as MerkleTreeNode;
+  const convertedData = r.Items?.map(item => {
+    const parent = AWS.DynamoDB.Converter.output(item?.parent);
+    return {
+      ...item,
+      parent,
+    } as MerkleTreeNode;
+  });
+  return convertedData;
 };

@@ -24,7 +24,7 @@ export class DynamoDBSetup extends Construct {
         type: ddb.AttributeType.STRING,
       },
       sortKey: {
-        name: 'hash',
+        name: 'createdAt',
         type: ddb.AttributeType.STRING,
       },
       projectionType: ddb.ProjectionType.ALL,

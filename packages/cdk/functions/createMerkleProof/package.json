@@ -1,0 +1,13 @@
+{
+  "name": "createmerkleproof",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@zk-kit/incremental-merkle-tree": "^0.4.3",
+    "@zk-kit/protocols": "^1.11.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.94"
+  }
+}
