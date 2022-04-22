@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import mapGithubProfile from 'oauth/mapGithubProfile';
 
 type Data = {
   name: string;

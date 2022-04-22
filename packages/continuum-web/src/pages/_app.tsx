@@ -6,6 +6,7 @@ import { NotificationProvider } from 'contexts/NotificationContext';
 import type { AppProps } from 'next/app';
 import { Networkish } from '@ethersproject/networks';
 import { Seo } from 'components/ui/Seo';
+import { ContentProvider } from 'contexts/ContentContext';
 
 // Chains for connectors to support
 const chains =
@@ -28,17 +29,19 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider connectors={connectors} provider={provider}>
       <SessionProvider session={pageProps.session} refetchInterval={0}>
-        <NotificationProvider>
-          <Seo
-            imgHeight={768}
-            imgWidth={1024}
-            imgUrl="/proved-ogp.jpeg"
-            path="https://usecontinuum.app"
-            title="Continuum"
-            pageDescription="Prove your work credentials with privacy."
-          />
-          <Component {...pageProps} />
-        </NotificationProvider>
+        <ContentProvider>
+          <NotificationProvider>
+            <Seo
+              imgHeight={768}
+              imgWidth={1024}
+              imgUrl="/proved-ogp.jpeg"
+              path="https://usecontinuum.app"
+              title="Continuum"
+              pageDescription="Prove your work credentials with privacy."
+            />
+            <Component {...pageProps} />
+          </NotificationProvider>
+        </ContentProvider>
       </SessionProvider>
     </Provider>
   );

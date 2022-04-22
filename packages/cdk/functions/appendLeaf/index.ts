@@ -235,7 +235,7 @@ export const handler = async function (
     headers,
     statusCode: 200,
     body: JSON.stringify({
-      test: 'test',
+      inserted: true,
     }),
   };
 };

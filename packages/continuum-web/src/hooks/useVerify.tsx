@@ -1,10 +1,10 @@
+import { useContentUpdate } from 'contexts/ContentContext';
 import { useState } from 'react';
-import { Content } from 'types';
 
 export const useVerify = () => {
   const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Content[] | undefined>(undefined);
+  const setContent = useContentUpdate();
 
   const verifygithub = async ({
     code,
@@ -28,7 +28,7 @@ export const useVerify = () => {
         })
       ).json();
 
-      setData(result.contents);
+      setContent({ contents: result.contents });
     } catch (e) {
       console.log(e);
       setError(e as Error);
@@ -42,7 +42,6 @@ export const useVerify = () => {
     {
       error,
       loading,
-      data,
     },
     verifygithub,
   ] as const;
