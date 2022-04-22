@@ -1,0 +1,37 @@
+[
+  {
+    "name": "More than 2 years",
+    "criteria": 2,
+    "attr_key": "created_at"
+  },
+  {
+    "name": "More than 4 years",
+    "criteria": 4,
+    "attr_key": "created_at"
+  },
+  {
+    "name": "More than 6 years",
+    "criteria": 6,
+    "attr_key": "created_at"
+  },
+  {
+    "name": "More than 10 followers",
+    "criteria": 4,
+    "attr_key": "followers"
+  },
+  {
+    "name": "More than 30 followers",
+    "criteria": 30,
+    "attr_key": "followers"
+  },
+  {
+    "name": "More than 50 followers",
+    "criteria": 50,
+    "attr_key": "followers"
+  },
+  {
+    "name": "More than 100 followers",
+    "criteria": 100,
+    "attr_key": "followers"
+  }
+]

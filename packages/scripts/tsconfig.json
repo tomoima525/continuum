@@ -7,6 +7,7 @@
       "@/crypto-tool/*": ["./packages/crypto-tool/*"]
     }
   },
+  "include": ["./**/*.json"],
   "exclude": ["node_modules"],
   "references": [
     {

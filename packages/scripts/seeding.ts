@@ -2,6 +2,7 @@ import * as AWS from 'aws-sdk';
 import crypto from 'crypto';
 import { MERKLE_TREE_DEPTH } from '../configs/index';
 import { buildPoseidonOpt, createPoseidonHash } from '../crypto-tool';
+import groups from './groups.json';
 
 // use your local profile
 const credentials = new AWS.SharedIniFileCredentials({ profile: 'knot' });
@@ -10,6 +11,47 @@ const docClient = new AWS.DynamoDB.DocumentClient({
   region: 'us-west-2',
   credentials,
 });
+
+export const seedGroups = async (TableName: string): Promise<unknown> => {
+  console.log('seeding groups');
+  let putRequests: AWS.DynamoDB.DocumentClient.WriteRequest[] = [];
+  try {
+    groups.forEach(group => {
+      // internal id
+      const id = crypto.randomBytes(16).toString('hex');
+      const nullifier = BigInt(
+        '0x' + crypto.randomBytes(16).toString('hex'),
+      ).toString(10);
+
+      const putRequest: AWS.DynamoDB.DocumentClient.WriteRequest = {
+        PutRequest: {
+          Item: {
+            id: `Group#${id}`,
+            nullifier,
+            name: group.name,
+            criteria: group.criteria,
+            attr_key: group.attr_key,
+            groupOwnerId: '1',
+            createdAt: new Date().toISOString(),
+          },
+        },
+      };
+      putRequests.push(putRequest);
+    });
+
+    // console.log('===', JSON.stringify(putRequests));
+    const putParams: AWS.DynamoDB.DocumentClient.BatchWriteItemInput = {
+      RequestItems: {
+        [`${TableName}`]: putRequests,
+      },
+    };
+    await docClient.batchWrite(putParams).promise();
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+  return;
+};
 
 export const seedZeroHashes = async (TableName: string): Promise<unknown> => {
   console.log('Seeding zero hashes...');
