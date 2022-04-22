@@ -2,12 +2,53 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { GradientBtn } from 'components/ui/GradientBtn';
 import { Content } from 'types';
+import { DynamicColorBtn } from 'components/ui/DynamicColorBtn';
+import { shorten } from 'utils/commitment';
 
-type GithubContentProps = {
-  contents: Content[];
+export enum Action {
+  MINT,
+  REVEAL,
+}
+interface ActionButtonProps {
+  handleAction: (action: Action) => Promise<unknown>;
+  commitmentHash: string | undefined;
+  mintAddress: string | undefined;
+}
+
+const ActionButton = (props: ActionButtonProps) => {
+  if (props.mintAddress) {
+    return (
+      <div className="flex-shrink self-center justify-center items-center px-3">
+        {props.mintAddress}
+      </div>
+    );
+  }
+  const { handleAction } = props;
+
+  if (props.commitmentHash) {
+    return (
+      <DynamicColorBtn onClick={async () => await handleAction(Action.MINT)}>
+        Mint NFT
+      </DynamicColorBtn>
+    );
+  }
+
+  return (
+    <DynamicColorBtn onClick={async () => await handleAction(Action.REVEAL)}>
+      Reveal Data
+    </DynamicColorBtn>
+  );
 };
 
+interface GithubContentProps {
+  contents: Content[];
+  handleAction: (
+    groupId: string,
+    groupName: string,
+  ) => (action: Action) => Promise<unknown>;
+}
 export const GithubContent = (props: GithubContentProps) => {
+  const { handleAction } = props;
   return (
     <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-col justify-between">
       <div className="flex flex-row justify-between">
@@ -43,7 +84,7 @@ export const GithubContent = (props: GithubContentProps) => {
           <li key="Header">
             <div className="flex flex-row border-b-2 border-gray-700 mb-3">
               <div className="flex-1">Data from Github</div>
-              <div className="flex-1 text-left">Proof</div>
+              <div className="flex-1 text-left">Data Revealed</div>
             </div>
           </li>
           {props.contents.map(content => (
@@ -51,18 +92,18 @@ export const GithubContent = (props: GithubContentProps) => {
               <div className="flex flex-row mb-2">
                 <div className="flex-1">{content.groupName}</div>
                 <div className="flex-1 text-left">
-                  {content.commitmentHash || 'Proof not generated'}
+                  {content.commitmentHash
+                    ? `Yes (commitment: ${shorten(content.commitmentHash)})`
+                    : 'No'}
                 </div>
-
-                {content.mintAddress ? (
-                  <div className="flex-shrink self-center justify-center items-center px-3">
-                    {content.mintAddress}
-                  </div>
-                ) : (
-                  <div className="flex-shrink self-center justify-center items-center px-3">
-                    Proof & Mint
-                  </div>
-                )}
+                <ActionButton
+                  commitmentHash={content.commitmentHash}
+                  mintAddress={content.mintAddress}
+                  handleAction={handleAction(
+                    content.groupId,
+                    content.groupName,
+                  )}
+                />
               </div>
             </li>
           ))}
