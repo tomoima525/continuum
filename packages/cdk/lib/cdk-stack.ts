@@ -1,7 +1,9 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Aws, Stack, StackProps } from 'aws-cdk-lib';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
+import { AuthLambdaStack } from './auth-lambda-stack';
 import { DynamoDBSetup } from './dynamodb-stack';
-import { GroupApiSetup } from './group-api-stack';
+import { GroupApiSetup } from './api-stack';
 import { GroupLambdaStack } from './group-lambda-stack';
 import { LambdaLayerSetup } from './layer-stack';
 
@@ -12,17 +14,34 @@ export class CdkStack extends Stack {
     // DynamoDB
     const dynamoDBStack = new DynamoDBSetup(this, 'DynamoDB');
 
+    // secret manager policy
+    const secretManagerPolicy = new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ['secretsmanager:GetSecretValue'],
+      resources: [
+        `arn:aws:secretsmanager:${Aws.REGION}:${Aws.ACCOUNT_ID}:secret:*`,
+      ],
+    });
+
     // Layer
     const layer = new LambdaLayerSetup(this, 'LambdaLayer');
+
     // Lambda
     const groupLambda = new GroupLambdaStack(this, 'GroupLambda', {
       dbUtilLayer: layer.dbUtilLayer,
       continuumTable: dynamoDBStack.continuumTable,
     });
 
+    const authGithub = new AuthLambdaStack(this, 'AuthLambda', {
+      dbUtilLayer: layer.dbUtilLayer,
+      continuumTable: dynamoDBStack.continuumTable,
+      secretManagerPolicy,
+    });
+
     // API Gateway
-    new GroupApiSetup(this, 'Group API', {
+    new GroupApiSetup(this, 'Continuum API', {
       appendLeaf: groupLambda.appendLeafLambda,
+      githubAuth: authGithub.authGithubLambda,
     });
   }
 }

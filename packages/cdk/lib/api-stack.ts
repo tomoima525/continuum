@@ -8,15 +8,16 @@ import { deployEnv } from './envSpecific';
 
 interface GroupApiSetupProps {
   appendLeaf: lambda.NodejsFunction;
+  githubAuth: lambda.NodejsFunction;
 }
 
 export class GroupApiSetup extends Construct {
   constructor(scope: Construct, id: string, props: GroupApiSetupProps) {
     super(scope, id);
 
-    const api = new apigateway.RestApi(this, 'GroupApi', {
-      restApiName: 'Continuum Group API',
-      description: 'group api',
+    const api = new apigateway.RestApi(this, 'ContinuumApi', {
+      restApiName: 'Continuum API',
+      description: 'continuum api',
       deployOptions: {
         stageName: deployEnv(),
       },
@@ -34,7 +35,7 @@ export class GroupApiSetup extends Construct {
       },
     });
 
-    const { appendLeaf } = props;
+    const { appendLeaf, githubAuth } = props;
     const merkleTreeResource = api.root.addResource('merkleTree');
     const appendResource = merkleTreeResource.addResource('append');
     appendResource.addMethod(
@@ -42,6 +43,12 @@ export class GroupApiSetup extends Construct {
       new apigateway.LambdaIntegration(appendLeaf),
     );
 
-    new CfnOutput(this, 'GroupApiUrl', { value: api.url });
+    const githubAuthResource = api.root.addResource('githubAuth');
+    githubAuthResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(githubAuth),
+    );
+
+    new CfnOutput(this, 'ContinuumApiUrl', { value: api.url });
   }
 }

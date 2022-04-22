@@ -27,3 +27,45 @@ export type MerkleTreeNode = {
   siblinghash?: Maybe<Scalars['String']>;
   parent?: Maybe<MerkleTreeNode>;
 };
+
+export interface User extends Record<string, any> {
+  id: string;
+  username: string;
+  name: string;
+}
+
+export interface GithubParameters {
+  created_at: string;
+  followers: number;
+  owned_private_repos: number;
+  proPlan: boolean;
+  public_repos: number;
+  receivedStars?: number;
+}
+
+export type GithubUser = User & GithubParameters;
+
+export interface Commitment {
+  id: string;
+  userId: string;
+  groupId: string;
+  hash: string;
+  mintAddress?: string;
+  createdAt: string;
+}
+
+export interface Content {
+  commitmentHash?: string;
+  groupId: string;
+  groupName: string; // e.g. "More than 10 followers"
+  groupNullifier: string;
+  mintAddress?: string; // e.g. "0xfkl..." if minted
+}
+
+export interface Group {
+  id: string;
+  nullifier: string; // BigInt. Used for external nullifier
+  name: string; // "More than 10 followers"
+  criteria: number; // e.g. 20
+  attr_key: string; // "created_at"
+}

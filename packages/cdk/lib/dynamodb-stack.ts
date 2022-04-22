@@ -29,5 +29,33 @@ export class DynamoDBSetup extends Construct {
       },
       projectionType: ddb.ProjectionType.ALL,
     });
+
+    //global secondary key for fetching nodes by groupOwnerId
+    this.continuumTable.addGlobalSecondaryIndex({
+      indexName: 'GroupOwnerIndex',
+      partitionKey: {
+        name: 'groupOwnerId',
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'createdAt',
+        type: ddb.AttributeType.STRING,
+      },
+      projectionType: ddb.ProjectionType.ALL,
+    });
+
+    //global secondary key for fetching commitments by userId
+    this.continuumTable.addGlobalSecondaryIndex({
+      indexName: 'CommitmentUserIndex',
+      partitionKey: {
+        name: 'userId',
+        type: ddb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'createdAt',
+        type: ddb.AttributeType.STRING,
+      },
+      projectionType: ddb.ProjectionType.ALL,
+    });
   }
 }
