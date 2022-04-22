@@ -1,17 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { GradientBtn } from 'components/ui/GradientBtn';
-import { GithubUser } from 'types';
-import { mapGithubContents } from './mapGithubContents';
-import { arrayBuffer } from 'stream/consumers';
+import { Content } from 'types';
 
 type GithubContentProps = {
-  user: GithubUser;
+  contents: Content[];
 };
 
 export const GithubContent = (props: GithubContentProps) => {
-  const contents = mapGithubContents(props.user);
-
   return (
     <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-col justify-between">
       <div className="flex flex-row justify-between">
@@ -42,22 +38,36 @@ export const GithubContent = (props: GithubContentProps) => {
           </GradientBtn>
         </Link>
       </div>
-      <ul role="list" className="py-4">
-        {contents.map(content => (
-          <li key={content.key}>
-            <div className="flex flex-row">
-              <div className="flex-1">{`${content.title}`}</div>
-              <div className="flex-1 text-left">{`${content.message}`}</div>
-
-              {content.showMintBtn && (
-                <div className="flex-shrink self-center justify-center items-center">
-                  Mint NFT
-                </div>
-              )}
+      {props.contents && (
+        <ul role="list" className="py-4">
+          <li key="Header">
+            <div className="flex flex-row border-b-2 border-gray-700 mb-3">
+              <div className="flex-1">Data from Github</div>
+              <div className="flex-1 text-left">Proof</div>
             </div>
           </li>
-        ))}
-      </ul>
+          {props.contents.map(content => (
+            <li key={content.groupId}>
+              <div className="flex flex-row mb-2">
+                <div className="flex-1">{content.groupName}</div>
+                <div className="flex-1 text-left">
+                  {content.commitmentHash || 'Proof not generated'}
+                </div>
+
+                {content.mintAddress ? (
+                  <div className="flex-shrink self-center justify-center items-center px-3">
+                    {content.mintAddress}
+                  </div>
+                ) : (
+                  <div className="flex-shrink self-center justify-center items-center px-3">
+                    Proof & Mint
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

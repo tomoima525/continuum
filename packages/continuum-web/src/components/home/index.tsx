@@ -4,36 +4,24 @@ import { useVerify } from 'hooks/useVerify';
 import { useEffect } from 'react';
 import { CTA } from './CTA';
 import { GithubContent } from './GithubContent';
-import { GithubUser } from 'types';
-
-const data: GithubUser = {
-  created_at: '2013-12-28T17:01:03Z',
-  followers: 184,
-  id: '6277118',
-  name: 'Tomoaki Imai',
-  owned_private_repos: 7,
-  proPlan: false,
-  public_repos: 123,
-  receivedStars: 154,
-  username: 'tomoima525',
-};
 
 export const Home = () => {
   const router = useRouter();
   const session = useSession();
-  const [{ data: githubdata }, verifygithub] = useVerify();
+  const address = session.data?.address as string;
+  const [{ data: contents }, verifygithub] = useVerify();
   const code = router.query.code as string;
 
   useEffect(() => {
-    console.log({ code });
-    if (code) {
+    console.log({ code, address });
+    if (code && address) {
       // Start verification to refresh user data
-      verifygithub({ code }).catch(e => {
+      verifygithub({ code, address }).catch(e => {
         console.log(e);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]);
+  }, [code, address]);
 
   // TODO: fetch user's commitment
   // useEffect(() => {
@@ -58,10 +46,9 @@ export const Home = () => {
   //   }
   // };
 
-  console.log({ session, githubdata });
   return (
     <div className="max-w-7xl mx-auto py-10 md:py-3 h-full bg-proved-500">
-      {data ? <GithubContent user={data} /> : <CTA />}
+      {contents ? <GithubContent contents={contents} /> : <CTA />}
       <header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl pt-6 font-bold leading-tight text-white">
