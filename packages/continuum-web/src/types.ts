@@ -29,3 +29,11 @@ export interface GithubParameters {
 }
 
 export type GithubUser = User & GithubParameters;
+
+export interface Content {
+  commitmentHash?: string;
+  groupId: string;
+  groupName: string; // e.g. "More than 10 followers"
+  groupNullifier: string;
+  mintAddress?: string; // e.g. "0xfkl..." if minted
+}
