@@ -1,6 +1,8 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es2018",
+    "baseUrl": ".",
+    "target": "ES2020",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
@@ -8,5 +10,13 @@
     "declaration": true
   },
   "include": ["./scripts", "./test", "./typechain"],
-  "files": ["./hardhat.config.ts"]
+  "files": ["./hardhat.config.ts"],
+  "references": [
+    {
+      "path": "../configs"
+    },
+    {
+      "path": "../crypto-tool"
+    }
+  ]
 }
