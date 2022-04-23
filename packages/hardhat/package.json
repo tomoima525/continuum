@@ -1,5 +1,27 @@
 {
   "name": "hardhat-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "circuit:genInput": "npx hardhat run ./scripts/generateSnarkInput.ts",
+    "circuit:genSolInput": "npx hardhat run ./scripts/generateSolidityInput.ts",
+    "coverage": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat coverage",
+    "gas": "REPORT_GAS=true npx hardhat test",
+    "size": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat size-contracts",
+    "test": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat test",
+    "abi": "npx hardhat export-abi --no-compile",
+    "proof:rinkeby:deploy": "npx hardhat run --network rinkeby scripts/deploy-proof.ts",
+    "proof:matic:deploy": "ENV=prod npx hardhat run --network matic scripts/deploy-proof.ts",
+    "console:rinkeby": "npx hardhat console --network rinkeby",
+    "account:rinkeby": "npx hardhat run --network rinkeby scripts/check-deploy-account.ts",
+    "account:matic": "npx hardhat run --network matic scripts/check-deploy-account.ts",
+    "txreceipt:matic": "npx hardhat run --network matic scripts/check-tx-receipt.ts"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
@@ -31,5 +53,15 @@
     "ts-node": "^10.7.0",
     "typechain": "^5.2.0",
     "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@appliedzkp/semaphore-contracts": "^0.8.1",
+    "@interep/identity": "^0.1.1",
+    "@openzeppelin/contracts": "^4.5.0",
+    "@zk-kit/incremental-merkle-tree": "^0.4.3",
+    "@zk-kit/protocols": "^1.11.1",
+    "circomlib": "^2.0.3",
+    "js-logger": "^1.6.1",
+    "snarkjs": "^0.4.16"
   }
 }
