@@ -1,19 +1,7 @@
 // Taken from https://github.com/appliedzkp/semaphore/blob/main/scripts/compile-circuits.ts
-import { exec as _exec } from "child_process";
 import fs from "fs";
 import { zKey } from "snarkjs";
-import { promisify } from "util";
 import logger from "js-logger";
-
-// async function exec(command: string) {
-//   const { stderr, stdout } = await promisify(_exec)(command);
-
-//   if (stderr) {
-//     throw new Error(stderr);
-//   }
-
-//   console.info(stdout);
-// }
 
 async function main() {
   const buildPath = "./circuit";
