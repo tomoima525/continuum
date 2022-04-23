@@ -10,7 +10,9 @@
     ],
     "nohoist": [
       "**/circomlibjs",
-      "**/circomlibjs/**"
+      "**/circomlibjs/**",
+      "**/circomlib",
+      "**/snarkjs"
     ]
   },
   "devDependencies": {
