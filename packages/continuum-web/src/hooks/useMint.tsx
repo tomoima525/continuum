@@ -1,0 +1,130 @@
+import { Contract, Signer } from 'ethers';
+import { useCallback, useState } from 'react';
+import { abi as ContinuumABI } from 'contracts/Continuum.json';
+import createIdentity from '@interep/identity';
+import { genWitness, genProof, packToSolidityProof } from 'utils/zkp';
+import { useContentState, useContentUpdate } from 'contexts/ContentContext';
+
+type ReturnParameters = {
+  mint: (
+    signer: Signer,
+    groupId: string,
+    groupNullifier: string,
+    commitmentId?: string,
+  ) => Promise<unknown>;
+  mintStatus: string | null;
+};
+export default function useMint(): ReturnParameters {
+  const [mintStatus, setMintStatus] = useState<string | null>(null);
+  const contentData = useContentState();
+  const setContentData = useContentUpdate();
+  const mint = useCallback(
+    async (
+      signer: Signer,
+      groupId: string,
+      groupNullifier: string,
+      commitmentId?: string,
+    ) => {
+      setMintStatus('Collecting commitments... ');
+      const identity = await createIdentity(
+        (message: string) => signer.signMessage(message),
+        groupId,
+      );
+      const identityCommitment = identity.genIdentityCommitment().toString();
+      const signal = 'continuum';
+
+      const zkFiles = {
+        wasmFilePath: './semaphore.wasm',
+        zkeyFilePath: './semaphore_final.zkey',
+      };
+      try {
+        // Step 1 fetch leaves
+        const result = await (
+          await fetch(
+            `${
+              process.env.NEXT_PUBLIC_API_URL
+            }/merkleTree/proof?groupId=${encodeURIComponent(
+              groupId,
+            )}&identityCommitment=${identityCommitment}`,
+          )
+        ).json();
+        console.log(result.merkleProof);
+        setMintStatus('Generating proof... ');
+        // Step 2 Generate MerkleTree & MerkleProof
+        const witness = genWitness(
+          identity.getTrapdoor(),
+          identity.getNullifier(),
+          result.merkleProof,
+          BigInt(groupNullifier),
+          signal,
+        );
+
+        console.log('====== generating proof', witness);
+        // Step 3 Generate Proof
+        const { publicSignals, proof } = await genProof(
+          witness,
+          zkFiles.wasmFilePath,
+          zkFiles.zkeyFilePath,
+        );
+
+        console.log(publicSignals, proof);
+        const solidityProof = packToSolidityProof(proof);
+        const contractAddress =
+          window.location.hostname === 'localhost'
+            ? '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+            : (process.env.NEXT_PUBLIC_CONTINUUM_CONTRACT as string);
+        setMintStatus('Verifying Proof and minting NFT... ');
+        const contract = new Contract(contractAddress, ContinuumABI);
+        const transaction = await contract
+          .connect(signer)
+          .mint(
+            publicSignals.merkleRoot,
+            publicSignals.nullifierHash,
+            publicSignals.externalNullifier,
+            solidityProof,
+          );
+
+        // Step 4 Update DB
+        console.log(transaction.hash);
+        console.log({ commitmentId });
+        if (commitmentId) {
+          const body = JSON.stringify({
+            id: commitmentId,
+            mintAddress: transaction.hash,
+          });
+          const r = await (
+            await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/commitment/update`,
+              {
+                method: 'POST',
+                body,
+              },
+            )
+          ).json();
+
+          // Step5 Upate context
+          const newContent = contentData.contents?.map(content => {
+            if (content.groupId === groupId) {
+              return {
+                ...content,
+                mintAddress: transaction.hash,
+              };
+            }
+            return content;
+          });
+          setContentData({ contents: newContent });
+          return r;
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setMintStatus(null);
+      }
+    },
+    [],
+  );
+  return {
+    mintStatus,
+    mint,
+  };
+}
