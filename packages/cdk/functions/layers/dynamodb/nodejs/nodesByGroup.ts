@@ -9,9 +9,14 @@ export const nodesQueryByGroup = async (
   const params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName,
     IndexName: 'GroupIndex',
-    KeyConditionExpression: 'groupId = :id',
+    KeyConditionExpression: 'groupId = :g',
+    FilterExpression: 'contains(#i, :i)',
+    ExpressionAttributeNames: {
+      '#i': 'id',
+    },
     ExpressionAttributeValues: {
-      ':id': groupId,
+      ':g': groupId,
+      ':i': 'MerkleTree',
     },
   };
   const r = await docClient.query(params).promise();

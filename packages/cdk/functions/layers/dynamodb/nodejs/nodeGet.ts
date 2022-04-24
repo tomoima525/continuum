@@ -11,14 +11,16 @@ export const nodeGetByHash = async (
   const params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName,
     IndexName: 'GroupIndex',
-    KeyConditionExpression: 'groupId = :id',
-    FilterExpression: '#h = :hash',
+    KeyConditionExpression: 'groupId = :g',
+    FilterExpression: '#h = :hash AND contains(#i, :i)',
     ExpressionAttributeNames: {
       '#h': 'hash',
+      '#i': 'id',
     },
     ExpressionAttributeValues: {
-      ':id': groupId,
+      ':g': groupId,
       ':hash': hash,
+      ':i': 'MerkleTree',
     },
   };
   const r = await docClient.query(params).promise();

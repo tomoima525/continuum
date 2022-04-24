@@ -1,4 +1,6 @@
+import { commitmentPut } from './commitmentPut';
 import { commitmentsQueryByAddress } from './commitmentsQueryByAddress';
+import { commitmentUpdate } from './commitmentUpdate';
 import { groupsQuery } from './groupsQuery';
 import { nodeGetByHash } from './nodeGet';
 import { nodePut } from './nodePut';
@@ -8,7 +10,9 @@ import { nodesQuery } from './nodesQuery';
 import { nodesQueryByGroup } from './nodesByGroup';
 import { createNodePut, createNodeUpdate, nodesTxWrite } from './nodesTxWrite';
 export {
+  commitmentPut,
   commitmentsQueryByAddress,
+  commitmentUpdate,
   groupsQuery,
   nodeGetByHash,
   nodePut,
