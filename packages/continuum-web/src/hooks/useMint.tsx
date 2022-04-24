@@ -121,7 +121,7 @@ export default function useMint(): ReturnParameters {
         setMintStatus(null);
       }
     },
-    [],
+    [contentData, setContentData],
   );
   return {
     mintStatus,
