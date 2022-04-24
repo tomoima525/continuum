@@ -19,9 +19,7 @@ export const seedGroups = async (TableName: string): Promise<unknown> => {
     groups.forEach(group => {
       // internal id
       const id = crypto.randomBytes(16).toString('hex');
-      const nullifier = BigInt(
-        '0x' + crypto.randomBytes(16).toString('hex'),
-      ).toString(10);
+      const nullifier = BigInt('0x' + id).toString(10);
 
       const putRequest: AWS.DynamoDB.DocumentClient.WriteRequest = {
         PutRequest: {
