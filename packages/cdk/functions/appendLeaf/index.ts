@@ -11,6 +11,7 @@ import {
   nodeQuery,
   nodesQueryByGroup,
   nodesTxWrite,
+  commitmentPut,
 } from '/opt/nodejs/dynamodb-utils';
 import { buildPoseidonOpt, createPoseidonHash } from '/opt/nodejs/cdk-crypto';
 import { MerkleTreeNode } from '@/types';
@@ -27,6 +28,7 @@ export const handler = async function (
   const groupId = requestBody?.groupId as string;
   const groupName = requestBody?.groupName as string;
   const identityCommitment = requestBody?.identityCommitment as string;
+  const address = requestBody?.address as string;
   const tableName = process.env.TableName as string;
 
   // TODO: add check mechanism
@@ -230,6 +232,18 @@ export const handler = async function (
     await nodesTxWrite(tx);
     currentIndex = Math.floor(currentIndex / 2);
   }
+
+  // Add commitment
+  commitmentPut({
+    TableName: tableName,
+    Item: {
+      id: `Commitment#${crypto.randomBytes(16).toString('hex')}`,
+      hash: identityCommitment,
+      groupId,
+      userId: `User#${address}`,
+      createdAt: new Date().toISOString(),
+    },
+  });
 
   return {
     headers,
