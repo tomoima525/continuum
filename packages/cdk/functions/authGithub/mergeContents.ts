@@ -61,6 +61,7 @@ export const mergeContents = (
     );
     return {
       ...content,
+      commitmentId: c?.id,
       commitmentHash: c?.hash,
       mintAddress: c?.mintAddress,
     };

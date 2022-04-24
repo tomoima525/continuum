@@ -14,6 +14,7 @@ export interface GroupLambdaStackProps {
 export class GroupLambdaStack extends Construct {
   public readonly appendLeafLambda: lambda_nodejs.NodejsFunction;
   public readonly createMerkleProofLambda: lambda_nodejs.NodejsFunction;
+  public readonly updateCommitmentLambda: lambda_nodejs.NodejsFunction;
 
   constructor(scope: Construct, id: string, props: GroupLambdaStackProps) {
     super(scope, id);
@@ -43,6 +44,32 @@ export class GroupLambdaStack extends Construct {
       },
     );
     props.continuumTable.grantReadWriteData(this.appendLeafLambda);
+
+    this.updateCommitmentLambda = new lambda_nodejs.NodejsFunction(
+      this,
+      'updateCommitment',
+      {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: 'handler',
+        entry: path.join(
+          `${__dirname}/../`,
+          'functions',
+          'updateCommitment/index.ts',
+        ),
+        environment: {
+          TableName: props.continuumTable.tableName,
+        },
+        timeout: Duration.seconds(25),
+        memorySize: 512,
+        bundling: {
+          externalModules: [
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+          ],
+        },
+        layers: [props.dbUtilLayer],
+      },
+    );
+    props.continuumTable.grantReadWriteData(this.updateCommitmentLambda);
 
     this.createMerkleProofLambda = new lambda_nodejs.NodejsFunction(
       this,

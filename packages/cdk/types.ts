@@ -53,8 +53,17 @@ export interface Commitment {
   mintAddress?: string;
   createdAt: string;
 }
+export interface CommitmentUpdate {
+  id: string;
+  userId?: string;
+  groupId?: string;
+  hash?: string;
+  mintAddress?: string;
+  createdAt?: string;
+}
 
 export interface Content {
+  commitmentId?: string;
   commitmentHash?: string;
   groupId: string;
   groupName: string; // e.g. "More than 10 followers"

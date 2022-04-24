@@ -8,7 +8,9 @@ import { deployEnv } from './envSpecific';
 
 interface GroupApiSetupProps {
   appendLeaf: lambda.NodejsFunction;
+  createMerkleProof: lambda.NodejsFunction;
   githubAuth: lambda.NodejsFunction;
+  updateCommitment: lambda.NodejsFunction;
 }
 
 export class GroupApiSetup extends Construct {
@@ -35,12 +37,19 @@ export class GroupApiSetup extends Construct {
       },
     });
 
-    const { appendLeaf, githubAuth } = props;
+    const { appendLeaf, createMerkleProof, githubAuth, updateCommitment } =
+      props;
     const merkleTreeResource = api.root.addResource('merkleTree');
     const appendResource = merkleTreeResource.addResource('append');
     appendResource.addMethod(
       'POST',
       new apigateway.LambdaIntegration(appendLeaf),
+    );
+
+    const createMerkleProofResource = merkleTreeResource.addResource('proof');
+    createMerkleProofResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(createMerkleProof),
     );
 
     const githubAuthResource = api.root.addResource('githubAuth');
@@ -49,6 +58,12 @@ export class GroupApiSetup extends Construct {
       new apigateway.LambdaIntegration(githubAuth),
     );
 
+    const commitmentResource = api.root.addResource('commitment');
+    const commitmentUpdateResource = commitmentResource.addResource('update');
+    commitmentUpdateResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(updateCommitment),
+    );
     new CfnOutput(this, 'ContinuumApiUrl', { value: api.url });
   }
 }
