@@ -31,9 +31,59 @@ export interface GithubParameters {
 export type GithubUser = User & GithubParameters;
 
 export interface Content {
+  commitmentId?: string;
   commitmentHash?: string;
   groupId: string;
   groupName: string; // e.g. "More than 10 followers"
   groupNullifier: string;
   mintAddress?: string; // e.g. "0xfkl..." if minted
 }
+
+// zkp related from Semaphore
+export type StrBigInt = string | bigint;
+
+export type Proof = {
+  pi_a: StrBigInt[];
+  pi_b: StrBigInt[][];
+  pi_c: StrBigInt[];
+  protocol: string;
+  curve: string;
+};
+
+export type SemaphoreFullProof = {
+  proof: Proof;
+  publicSignals: SemaphorePublicSignals;
+};
+export type SemaphorePublicSignals = {
+  merkleRoot: StrBigInt;
+  nullifierHash: StrBigInt;
+  signalHash: StrBigInt;
+  externalNullifier: StrBigInt;
+};
+
+export type SemaphoreSolidityProof = [
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+  StrBigInt,
+];
+
+export type SemaphoreWitness = {
+  identityNullifier: StrBigInt;
+  identityTrapdoor: StrBigInt;
+  treeSiblings: StrBigInt[];
+  treePathIndices: number[];
+  externalNullifier: StrBigInt;
+  signalHash: StrBigInt;
+};
+
+export type MerkleProof = {
+  root: StrBigInt;
+  leaf: StrBigInt;
+  siblings: StrBigInt[];
+  pathIndices: number[];
+};
