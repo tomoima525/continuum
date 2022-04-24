@@ -11,7 +11,7 @@
     "gas": "REPORT_GAS=true npx hardhat test",
     "size": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat size-contracts",
     "test": "TS_NODE_TRANSPILE_ONLY=1 npx hardhat test",
-    "abi": "npx hardhat export-abi --no-compile",
+    "abi": "npx hardhat typechain",
     "proof:rinkeby:deploy": "npx hardhat run --network rinkeby scripts/deploy-proof.ts",
     "proof:matic:deploy": "ENV=prod npx hardhat run --network matic scripts/deploy-proof.ts",
     "console:rinkeby": "npx hardhat console --network rinkeby",
