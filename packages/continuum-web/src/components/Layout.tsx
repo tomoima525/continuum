@@ -90,7 +90,7 @@ export const Layout = ({
           <footer className="bg-proved-500">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex items-center justify-between border-t-2 border-proved-300 text-gray-400 text-sm">
               <div>2022 Continuum</div>
-              <div className="space-x-3">
+              {/* <div className="space-x-3">
                 <a
                   className="hover:text-gray-200"
                   href="https://knotinc.notion.site/About-Knot-inc-4a4bcde74b5c46fcad6faed4d7662241"
@@ -109,7 +109,7 @@ export const Layout = ({
                 >
                   Terms
                 </a>
-              </div>
+              </div> */}
             </div>
           </footer>
         )}

@@ -13,28 +13,37 @@ interface ActionButtonProps {
   handleAction: (action: Action) => Promise<unknown>;
   commitmentHash: string | undefined;
   mintAddress: string | undefined;
+  disable?: boolean;
 }
 
 const ActionButton = (props: ActionButtonProps) => {
   if (props.mintAddress) {
     return (
-      <div className="flex-shrink self-center justify-center items-center px-3">
-        {props.mintAddress}
-      </div>
+      <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
+        <div className="flex-shrink self-center justify-center items-center p-3 underline hover:text-gray-200">
+          {shorten(props.mintAddress)}
+        </div>
+      </a>
     );
   }
   const { handleAction } = props;
 
   if (props.commitmentHash) {
     return (
-      <DynamicColorBtn onClick={async () => await handleAction(Action.MINT)}>
+      <DynamicColorBtn
+        disabled={props.disable}
+        onClick={async () => await handleAction(Action.MINT)}
+      >
         Mint NFT
       </DynamicColorBtn>
     );
   }
 
   return (
-    <DynamicColorBtn onClick={async () => await handleAction(Action.REVEAL)}>
+    <DynamicColorBtn
+      disabled={props.disable}
+      onClick={async () => await handleAction(Action.REVEAL)}
+    >
       Reveal Data
     </DynamicColorBtn>
   );
@@ -42,10 +51,18 @@ const ActionButton = (props: ActionButtonProps) => {
 
 interface GithubContentProps {
   contents: Content[];
-  handleAction: (
-    groupId: string,
-    groupName: string,
-  ) => (action: Action) => Promise<unknown>;
+  disable?: boolean;
+  handleAction: ({
+    commitmentId,
+    groupId,
+    groupName,
+    groupNullifier,
+  }: {
+    commitmentId?: string;
+    groupId: string;
+    groupName: string;
+    groupNullifier: string;
+  }) => (action: Action) => Promise<unknown>;
 }
 export const GithubContent = (props: GithubContentProps) => {
   const { handleAction } = props;
@@ -97,12 +114,15 @@ export const GithubContent = (props: GithubContentProps) => {
                     : 'No'}
                 </div>
                 <ActionButton
+                  disable={props.disable}
                   commitmentHash={content.commitmentHash}
                   mintAddress={content.mintAddress}
-                  handleAction={handleAction(
-                    content.groupId,
-                    content.groupName,
-                  )}
+                  handleAction={handleAction({
+                    commitmentId: content.commitmentId,
+                    groupId: content.groupId,
+                    groupName: content.groupName,
+                    groupNullifier: content.groupNullifier,
+                  })}
                 />
               </div>
             </li>

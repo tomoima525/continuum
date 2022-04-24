@@ -14,19 +14,20 @@ type ReturnParameters = {
     identityCommitment: string,
     groupId: string,
     groupName: string,
-  ) => Promise<true | null>;
-  loading: boolean;
+    address: string,
+  ) => Promise<undefined | null>;
+  addGroupStatus: string | null;
 };
 
 export default function useGroups(): ReturnParameters {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [addGroupStatus, setAddGroupStatus] = useState<string | null>(null);
   const contentData = useContentState();
   const setContentData = useContentUpdate();
 
   const generateIdentityCommitment = useCallback(
     async (signer: Signer, groupId: string): Promise<string | null> => {
       try {
-        setLoading(true);
+        setAddGroupStatus('Generating Identity');
 
         const identity = await createIdentity(
           message => signer.signMessage(message),
@@ -34,27 +35,34 @@ export default function useGroups(): ReturnParameters {
         );
         const identityCommitment = identity.genIdentityCommitment();
 
-        setLoading(false);
         return identityCommitment.toString();
       } catch (error) {
         console.error(error);
 
-        setLoading(false);
         return null;
+      } finally {
+        setAddGroupStatus(null);
       }
     },
     [],
   );
 
   const joinGroup = useCallback(
-    async (identityCommitment: string, groupId: string, groupName: string) => {
+    async (
+      identityCommitment: string,
+      groupId: string,
+      groupName: string,
+      address: string,
+    ) => {
       try {
-        setLoading(true);
+        setAddGroupStatus('Revealing status...');
         const body = JSON.stringify({
           identityCommitment,
           groupId,
           groupName,
+          address,
         });
+        console.log(body);
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/merkleTree/append`, {
           method: 'POST',
           body,
@@ -72,19 +80,19 @@ export default function useGroups(): ReturnParameters {
         });
 
         setContentData({ contents: newContent });
-        setLoading(false);
       } catch (error) {
         console.error(error);
 
-        setLoading(false);
         return null;
+      } finally {
+        setAddGroupStatus(null);
       }
     },
     [contentData, setContentData],
   );
 
   return {
-    loading,
+    addGroupStatus,
     generateIdentityCommitment,
     joinGroup,
   };

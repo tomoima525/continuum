@@ -5,6 +5,7 @@ import { useCallback, useEffect } from 'react';
 import { CTA } from './CTA';
 import { Action, GithubContent } from './GithubContent';
 import useGroups from 'hooks/useGroup';
+import useMint from 'hooks/useMint';
 import { Signer } from 'ethers';
 import { useContentState } from 'contexts/ContentContext';
 import { useSigner } from 'wagmi';
@@ -16,11 +17,9 @@ export const Home = () => {
   const address = session.data?.address as string;
   const [, verifygithub] = useVerify();
   const [{ data: signer }] = useSigner();
-  const {
-    loading: groupLoading,
-    generateIdentityCommitment,
-    joinGroup,
-  } = useGroups();
+  const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
+  const { mintStatus, mint } = useMint();
+
   const code = router.query.code as string;
 
   useEffect(() => {
@@ -42,36 +41,57 @@ export const Home = () => {
       signer,
       groupId,
     );
-
     if (identityCommitment) {
       // insert to a specific group off-chain
-      await joinGroup(identityCommitment, groupId, groupName);
+      console.log('=== address', address);
+      await joinGroup(identityCommitment, groupId, groupName, address);
     }
   };
-  const mint = async () => {};
+  const proofAndMint = async (
+    signer: Signer,
+    groupId: string,
+    groupNullifier: string,
+    commitmentId?: string,
+  ) => {
+    console.log('===mint', groupNullifier);
+    await mint(signer, groupId, groupNullifier, commitmentId);
+  };
 
   const handleAction =
-    (groupId: string, groupName: string) => async (action: Action) => {
+    ({
+      commitmentId,
+      groupId,
+      groupName,
+      groupNullifier,
+    }: {
+      commitmentId?: string;
+      groupId: string;
+      groupName: string;
+      groupNullifier: string;
+    }) =>
+    async (action: Action) => {
       if (!signer) {
         console.log('==== not ready', signer);
         return;
       }
       switch (action) {
         case Action.MINT:
-          await mint();
+          await proofAndMint(signer, groupId, groupNullifier, commitmentId);
           break;
         case Action.REVEAL:
           await reveal(signer, groupId, groupName);
           break;
       }
     };
-
+  const disable =
+    (addGroupStatus?.length || 0) > 0 || (mintStatus?.length || 0) > 0;
   return (
     <div className="max-w-7xl mx-auto py-10 md:py-3 h-full bg-proved-500">
       {contentData.contents ? (
         <GithubContent
           contents={contentData.contents}
           handleAction={handleAction}
+          disable={disable}
         />
       ) : (
         <CTA />
@@ -79,7 +99,7 @@ export const Home = () => {
       <header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl pt-6 font-bold leading-tight text-white">
-            List of your proofs
+            Proof progress
           </h2>
         </div>
       </header>
@@ -87,7 +107,22 @@ export const Home = () => {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           {/* Replace with your content */}
           <div className="px-4 py-8 sm:px-0">
-            <div className="text-xl self-center text-white">No proofs yet!</div>
+            {mintStatus && (
+              <div className="text-xl self-center flex flex-row text-white">
+                <div className="self-center mx-2">
+                  <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
+                </div>
+                {mintStatus}
+              </div>
+            )}
+            {addGroupStatus && (
+              <div className="text-xl self-center text-white flex flex-row">
+                <div className="self-center mx-2">
+                  <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
+                </div>
+                {addGroupStatus}
+              </div>
+            )}
           </div>
         </div>
       </main>
