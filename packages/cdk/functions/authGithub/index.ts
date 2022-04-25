@@ -2,13 +2,13 @@ import * as AWS from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import fetch from 'node-fetch';
 import mapGithubProfile from './mapGithubProfile';
-import { GithubUser, User } from '@/types';
+import { User } from '@/types';
 import {
-  commitmentsQuery,
   commitmentsQueryByAddress,
   groupsQuery,
 } from '/opt/nodejs/dynamodb-utils';
 import { mergeContents } from './mergeContents';
+import { deployEnv } from 'lib/envSpecific';
 
 const s3 = new AWS.S3();
 
@@ -58,8 +58,11 @@ export const handler = async function (
   const code = requestBody?.code;
   const address = requestBody?.address;
   const isLocal = requestBody?.isLocal;
-  const client_id = process.env.GITHUB_CLIENT_ID as string;
-  const client_secret = await getSecret('continuum_github_key');
+  const client_id = isLocal
+    ? '52f7af74bd2002d1e28d'
+    : (process.env.GITHUB_CLIENT_ID as string);
+  const secret_id = `continuum_github_key_${isLocal ? 'local' : deployEnv()}`;
+  const client_secret = await getSecret(secret_id);
   const redirect_uri = isLocal
     ? `http://localhost:3000/home`
     : (process.env.REDIRECT_URL as string) + '/home';
