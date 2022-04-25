@@ -1,37 +1,67 @@
 [
   {
-    "name": "More than 2 years",
+    "name": "2+ years on Github",
     "criteria": 2,
     "attr_key": "created_at"
   },
   {
-    "name": "More than 4 years",
+    "name": "4+ years on Github",
     "criteria": 4,
     "attr_key": "created_at"
   },
   {
-    "name": "More than 6 years",
+    "name": "6+ years on Github",
     "criteria": 6,
     "attr_key": "created_at"
   },
   {
-    "name": "More than 10 followers",
-    "criteria": 4,
+    "name": "10+ followers",
+    "criteria": 10,
     "attr_key": "followers"
   },
   {
-    "name": "More than 30 followers",
+    "name": "30+ followers",
     "criteria": 30,
     "attr_key": "followers"
   },
   {
-    "name": "More than 50 followers",
+    "name": "50+ followers",
     "criteria": 50,
     "attr_key": "followers"
   },
   {
-    "name": "More than 100 followers",
+    "name": "100+ followers",
     "criteria": 100,
     "attr_key": "followers"
+  },
+  {
+    "name": "200+ followers",
+    "criteria": 200,
+    "attr_key": "followers"
+  },
+  {
+    "name": "10+ received stars",
+    "criteria": 10,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "30+ received stars",
+    "criteria": 30,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "50+ received stars",
+    "criteria": 50,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "100+ received stars",
+    "criteria": 100,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "200+ received stars",
+    "criteria": 200,
+    "attr_key": "receivedStars"
   }
 ]

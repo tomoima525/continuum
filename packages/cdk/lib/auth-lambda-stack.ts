@@ -7,6 +7,7 @@ import {
 import * as path from 'path';
 import { Construct } from 'constructs';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { deployEnv } from './envSpecific';
 
 export interface AuthLambdaStackProps {
   dbUtilLayer: lambda.LayerVersion;
@@ -32,8 +33,8 @@ export class AuthLambdaStack extends Construct {
         ),
         environment: {
           TableName: props.continuumTable.tableName,
-          GITHUB_CLIENT_ID: '52f7af74bd2002d1e28d',
-          REDIRECT_URL: 'TODO ADD URL',
+          GITHUB_CLIENT_ID: deployEnv() === 'dev' ? 'b3618911274da67ecaf8' : '',
+          REDIRECT_URL: 'https://continuum-swart.vercel.app',
         },
         timeout: Duration.seconds(25),
         memorySize: 256,

@@ -33,6 +33,19 @@ const calFollowers = (followers: number, groups: Group[]): Content | null => {
   };
 };
 
+const calStars = (receivedStars: number, groups: Group[]): Content | null => {
+  const matchCriteria = groups
+    .filter(g => g.attr_key === 'receivedStars' && receivedStars > g.criteria)
+    .sort((a, b) => b.criteria - a.criteria);
+
+  if (!matchCriteria.length) return null;
+  return {
+    groupId: matchCriteria[0].id,
+    groupName: matchCriteria[0].name,
+    groupNullifier: matchCriteria[0].nullifier,
+  };
+};
+
 export const mergeContents = (
   github: GithubUser,
   commitments: Commitment[],
@@ -52,6 +65,12 @@ export const mergeContents = (
   console.log('=====', accountContent);
   if (accountContent) {
     contents.push(accountContent);
+  }
+
+  const starContent = calStars(github.receivedStars || 0, groups);
+
+  if (starContent) {
+    contents.push(starContent);
   }
 
   // merge commitments if exists
