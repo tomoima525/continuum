@@ -1,10 +1,47 @@
-Continuum is a background checker using Zero Knowledge proof
+Continuum is a background checker using Zero Knowledge proof. This project is a proof of concept to showcase how revealing your data works with zero knowledge proof.
 
 # How it works
 
-TBU
+- Retrieves data from github. This will be stored only locally.
+- Users can selectively reveal data from Github.
+  - A commitment hash which is the combination of user's signature and data to reveal is inserted to MerkleTree.
+  - It does not represent any personal data. Currently MerkleTree is stored on AWS using DynamoDB.
+- Users can mint NFT to prove the data they revealed.
+  - Continuum generates MerkleProof from MerkleTree
+  - On the client side, users generate a zkSNARK proof using the MerkleProof
+  - Users submit the proof to the contract. Once verified, NFT will be issued.
 
 # Preparation
+
+Call `yarn install` at the root of the project.
+
+### Github auth
+
+- Create a new github app at https://github.com/settings/apps
+- Note app id and secret
+
+### Backend
+
+This project uses AWS. You need to setup your AWS account which has an access to at least CDK, Lambda, DynamoDB, SecretManager.
+
+- aws profile setup
+
+  - Open `packages/cdk/package.json` and `"cdk": "cdk --profile={your aws profile name}"`
+
+- Secret key
+
+  - Go to https://us-west-2.console.aws.amazon.com/secretsmanager/home and create `continuum_github_key_local` for local and `continuum_github_key_dev` for dev. Key should be `PK` and value should be the github app secret key that you created
+
+- redirect url and github client id
+
+  - Open https://github.com/tomoima525/continuum/blob/main/packages/cdk/lib/auth-lambda-stack.ts#L36 and update GITHUB_CLIEND_ID and REDIRECT_URL(your dev app. If it's localhost you don't need this)
+
+- Run `yarn cdk deploy` from `/packages/cdk` and see if everything is deployed.
+
+### Frontend
+
+- Rename local.env.sample to local.env and set your backend setup
+- Run `yarn run dev`
 
 # Circuit
 
