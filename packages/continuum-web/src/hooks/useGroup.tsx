@@ -62,18 +62,20 @@ export default function useGroups(): ReturnParameters {
           groupName,
           address,
         });
-        console.log(body);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/merkleTree/append`, {
-          method: 'POST',
-          body,
-        });
-
+        const r = await (
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/merkleTree/append`, {
+            method: 'POST',
+            body,
+          })
+        ).json();
+        console.log(r);
         // update commitments
         const newContent = contentData.contents?.map(content => {
           if (content.groupId === groupId) {
             return {
               ...content,
               commitmentHash: identityCommitment,
+              commitmentId: r.commitmentId,
             };
           }
           return content;
