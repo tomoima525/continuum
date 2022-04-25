@@ -33,6 +33,10 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 1337,
     },
+    testnet: {
+      url: `https://api.s0.b.hmny.io`,
+      accounts: [`0x${process.env.HARMONY_PRIVATE_KEY}`],
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

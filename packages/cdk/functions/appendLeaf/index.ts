@@ -234,10 +234,11 @@ export const handler = async function (
   }
 
   // Add commitment
+  const commitmentId = `Commitment#${crypto.randomBytes(16).toString('hex')}`;
   commitmentPut({
     TableName: tableName,
     Item: {
-      id: `Commitment#${crypto.randomBytes(16).toString('hex')}`,
+      id: commitmentId,
       hash: identityCommitment,
       groupId,
       userId: `User#${address}`,
@@ -250,6 +251,7 @@ export const handler = async function (
     statusCode: 200,
     body: JSON.stringify({
       inserted: true,
+      commitmentId,
     }),
   };
 };
