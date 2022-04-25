@@ -14,10 +14,6 @@ import networks from '../utils/networks.json';
 const provider = providers.getDefaultProvider(
   networks[networks.selectedChain].rpcUrls[0],
 );
-// Set up connectors
-// const connectors = ({ chainId }: { chainId?: number }) => {
-//   return [new InjectedConnector({ chains })];
-// };
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -28,8 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Seo
               imgHeight={768}
               imgWidth={1024}
-              imgUrl="/proved-ogp.jpeg"
-              path="https://usecontinuum.app"
+              imgUrl="/continuum-ogp.png"
+              path="https://continuum-swart.vercel.app/"
               title="Continuum"
               pageDescription="Prove your work credentials with privacy."
             />
