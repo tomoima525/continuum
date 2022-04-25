@@ -15,7 +15,7 @@ export const Home = () => {
   const session = useSession();
   const contentData = useContentState();
   const address = session.data?.address as string;
-  const [, verifygithub] = useVerify();
+  const [{ loading: verifyLoading }, verifygithub] = useVerify();
   const [{ data: signer }] = useSigner();
   const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
   const { mintStatus, mint } = useMint();
@@ -94,7 +94,7 @@ export const Home = () => {
           disable={disable}
         />
       ) : (
-        <CTA />
+        <CTA loading={verifyLoading} />
       )}
       <header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

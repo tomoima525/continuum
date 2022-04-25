@@ -1,12 +1,6 @@
 import { useRouter } from 'next/router';
 
 export const LandingPage = () => {
-  const router = useRouter();
-  const handleConnect = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-  };
   return (
     <div className="flex flex-col min-h-screen overflow-hidden bg-proved-500 text-white">
       <main className="flex-grow">
@@ -28,17 +22,6 @@ export const LandingPage = () => {
                 <div className="text-xl text-gray-400 mb-4 md:mb-8 text-center">
                   Prove your web2 work experience on-chain without revealing
                   your identity.
-                </div>
-                {/* CTA */}
-                <div className="flex justify-center">
-                  <button
-                    className="w-1/2 md:w-64 border-transparent rounded-full p-0.5 bg-gradient-to-r from-[#F8BCFF] via-[#9A96FF] to-[#A7DCFF]"
-                    onClick={handleConnect}
-                  >
-                    <div className="px-6 py-3 rounded-full text-base font-medium text-white bg-proved-500 hover:bg-proved-300">
-                      Connect your wallet
-                    </div>
-                  </button>
                 </div>
               </div>
 

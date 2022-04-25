@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { GradientBtn } from 'components/ui/GradientBtn';
 
-export const CTA = () => (
+export const CTA = ({ loading }: { loading: boolean }) => (
   <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-row justify-between">
     <div className="self-center flex flex-col">
       <p className="text-xl mb-1">
@@ -16,6 +16,11 @@ export const CTA = () => (
     <Link passHref href={process.env.NEXT_PUBLIC_GITHUB_AUTH_LINK as string}>
       <GradientBtn onClick={() => {}}>
         <div className="flex flex-row gap-2 items-center">
+          {loading && (
+            <div className="self-center ml-2">
+              <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
+            </div>
+          )}
           <p>Connect Github</p>
           <Image
             src="/GitHub-Mark-64px.png"
