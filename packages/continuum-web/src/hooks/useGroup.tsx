@@ -81,7 +81,7 @@ export default function useGroups(): ReturnParameters {
           return content;
         });
 
-        setContentData({ contents: newContent });
+        setContentData({ ...contentData, contents: newContent });
       } catch (error) {
         console.error(error);
 

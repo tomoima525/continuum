@@ -114,7 +114,7 @@ export default function useMint(): ReturnParameters {
             }
             return content;
           });
-          setContentData({ contents: newContent });
+          setContentData({ ...contentData, contents: newContent });
           return r;
         }
       } catch (error) {
