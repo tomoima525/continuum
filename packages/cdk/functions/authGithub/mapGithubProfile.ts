@@ -12,6 +12,7 @@ export default async function mapGithubProfile(
     created_at,
     owned_private_repos,
     public_repos,
+    avatar_url,
   }: User,
   headers: { authorization: string },
 ): Promise<{ id: string; github: User & GithubParameters }> {
@@ -34,6 +35,7 @@ export default async function mapGithubProfile(
       created_at,
       owned_private_repos,
       public_repos,
+      avatar_url,
     },
   };
 }
