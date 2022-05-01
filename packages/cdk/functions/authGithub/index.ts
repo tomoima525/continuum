@@ -118,6 +118,7 @@ export const handler = async function (
       headers,
       statusCode: 200,
       body: JSON.stringify({
+        github: mappedResult.github,
         contents,
       }),
     };
