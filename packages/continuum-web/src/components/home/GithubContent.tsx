@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { GradientBtn } from 'components/ui/GradientBtn';
-import { Content } from 'types';
 import { DynamicColorBtn } from 'components/ui/DynamicColorBtn';
 import { shorten } from 'utils/commitment';
+import { State } from 'contexts/ContentContext';
 
 export enum Action {
   MINT,
@@ -20,7 +20,7 @@ const ActionButton = (props: ActionButtonProps) => {
   if (props.mintAddress) {
     return (
       <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
-        <div className="flex-shrink self-center justify-center items-center p-3 underline hover:text-gray-200">
+        <div className="flex-shrink self-center justify-center items-center p-3 underline hover:text-gray-500">
           {shorten(props.mintAddress)}
         </div>
       </a>
@@ -50,7 +50,7 @@ const ActionButton = (props: ActionButtonProps) => {
 };
 
 interface GithubContentProps {
-  contents: Content[];
+  content: State;
   disable?: boolean;
   handleAction: ({
     commitmentId,
@@ -66,15 +66,36 @@ interface GithubContentProps {
 }
 export const GithubContent = (props: GithubContentProps) => {
   const { handleAction } = props;
+  const githubRaw = props.content?.github;
   return (
     <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-col justify-between">
       <div className="flex flex-row justify-between">
-        <div className="self-center flex flex-col">
+        <div className="self-center flex flex-col w-full">
           <p className="text-xl mb-1">Your Github Profile</p>
           <p className="text-sm">
             Github data will be only stored locally. It will be used for
             generating your proof.
           </p>
+          {githubRaw && (
+            <div className="my-3 gap-y-2 grid grid-cols-1 md:grid-cols-2 max-w-3xl">
+              <div className="col-span-2 py-2">
+                <Image
+                  src={githubRaw.avatar_url || '/GitHub-Mark-64px.png'}
+                  alt="github"
+                  className="rounded-full bg-slate-50"
+                  layout="intrinsic"
+                  width={128}
+                  height={128}
+                  draggable="false"
+                />
+              </div>
+              <p className="col-span-2">Name: {githubRaw.username}</p>
+              <p>Account Created: {githubRaw.created_at}</p>
+              <p>Followers: {githubRaw.followers}</p>
+              <p>Total stars: {githubRaw.receivedStars}</p>
+              <p>Public repos : {githubRaw.public_repos}</p>
+            </div>
+          )}
         </div>
         <Link
           passHref
@@ -96,38 +117,53 @@ export const GithubContent = (props: GithubContentProps) => {
           </GradientBtn>
         </Link>
       </div>
-      {props.contents && (
-        <ul role="list" className="py-4">
-          <li key="Header">
-            <div className="flex flex-row border-b-2 border-gray-700 mb-3">
-              <div className="flex-1">Data from Github</div>
-              <div className="flex-1 text-left">Data Revealed</div>
-            </div>
-          </li>
-          {props.contents.map(content => (
-            <li key={content.groupId}>
-              <div className="flex flex-row mb-2">
-                <div className="flex-1">{content.groupName}</div>
-                <div className="flex-1 text-left">
-                  {content.commitmentHash
-                    ? `Yes (commitment: ${shorten(content.commitmentHash)})`
-                    : 'No'}
-                </div>
-                <ActionButton
-                  disable={props.disable}
-                  commitmentHash={content.commitmentHash}
-                  mintAddress={content.mintAddress}
-                  handleAction={handleAction({
-                    commitmentId: content.commitmentId,
-                    groupId: content.groupId,
-                    groupName: content.groupName,
-                    groupNullifier: content.groupNullifier,
-                  })}
+      {props.content?.contents && (
+        <div className="pt-4">
+          <p className="text-xl mb-1">Data to reveal</p>
+          <ul role="list" className="py-4">
+            <li key="Header">
+              <div className="flex flex-row border-b-2 border-gray-700 mb-3">
+                <Image
+                  src="/GitHub-Mark-64px.png"
+                  alt="github"
+                  className="rounded-2xl absolute z-10"
+                  layout="intrinsic"
+                  width={32}
+                  height={32}
+                  draggable="false"
                 />
+                <div className="flex-1 text-lg">Criteria</div>
+                <div className="flex-1 text-lg text-center">Data Revealed</div>
+                <div className="text-center text-lg w-40">Action</div>
               </div>
             </li>
-          ))}
-        </ul>
+            {props.content.contents.map(content => (
+              <li key={content.groupId}>
+                <div className="flex flex-row mb-2 items-center">
+                  <div className="flex-1">{content.groupName}</div>
+                  <div className="flex-1 text-center">
+                    {content.commitmentHash
+                      ? `Yes (commitment: ${shorten(content.commitmentHash)})`
+                      : 'No'}
+                  </div>
+                  <div className="mx-2">
+                    <ActionButton
+                      disable={props.disable}
+                      commitmentHash={content.commitmentHash}
+                      mintAddress={content.mintAddress}
+                      handleAction={handleAction({
+                        commitmentId: content.commitmentId,
+                        groupId: content.groupId,
+                        groupName: content.groupName,
+                        groupNullifier: content.groupNullifier,
+                      })}
+                    />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

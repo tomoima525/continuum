@@ -9,6 +9,9 @@ const nextConfig = {
     config.experiments = { asyncWebAssembly: true, layers: true };
     return config;
   },
+  images: {
+    domains: ['github.com', 'avatars.githubusercontent.com'],
+  },
 };
 
 module.exports = nextConfig;

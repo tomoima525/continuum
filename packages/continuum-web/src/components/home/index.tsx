@@ -15,11 +15,10 @@ export const Home = () => {
   const session = useSession();
   const contentData = useContentState();
   const address = session.data?.address as string;
-  const [{ loading: verifyLoading }, verifygithub] = useVerify();
+  const [{ loading: verifyLoading }, verifygithub] = useVerify(address);
   const [{ data: signer }] = useSigner();
   const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
   const { mintStatus, mint } = useMint();
-
   const code = router.query.code as string;
 
   useEffect(() => {
@@ -89,7 +88,7 @@ export const Home = () => {
     <div className="max-w-7xl mx-auto py-10 md:py-3 h-full bg-proved-500">
       {contentData.contents ? (
         <GithubContent
-          contents={contentData.contents}
+          content={contentData}
           handleAction={handleAction}
           disable={disable}
         />

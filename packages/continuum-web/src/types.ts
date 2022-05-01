@@ -26,6 +26,7 @@ export interface GithubParameters {
   proPlan?: boolean;
   public_repos: number;
   receivedStars?: number;
+  avatar_url: string;
 }
 
 export type GithubUser = User & GithubParameters;
