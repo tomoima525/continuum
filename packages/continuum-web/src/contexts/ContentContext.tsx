@@ -1,3 +1,4 @@
+import useLocalStorage from 'hooks/useLocalStorage';
 import {
   createContext,
   Dispatch,
@@ -6,9 +7,13 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Content } from 'types';
+import { Content, GithubUser } from 'types';
 
-type State = { contents?: Content[] | undefined | null } | undefined;
+const env = process.env.NEXT_PUBLIC_ENV as string;
+
+export type State =
+  | { contents?: Content[] | undefined | null; github: GithubUser | null }
+  | undefined;
 
 const ContentStateContext = createContext<State>(undefined);
 const ContentUpdateContext = createContext<
@@ -16,11 +21,13 @@ const ContentUpdateContext = createContext<
 >(undefined);
 
 export const ContentProvider = ({ children }: { children: ReactNode }) => {
-  const [state, setState] = useState<State>({ contents: null });
-
+  const [storedValue, setStoredValue] = useLocalStorage<State>(
+    `Continuum:${env}`,
+    { contents: null, github: null },
+  );
   return (
-    <ContentStateContext.Provider value={state}>
-      <ContentUpdateContext.Provider value={setState}>
+    <ContentStateContext.Provider value={storedValue}>
+      <ContentUpdateContext.Provider value={setStoredValue}>
         {children}
       </ContentUpdateContext.Provider>
     </ContentStateContext.Provider>

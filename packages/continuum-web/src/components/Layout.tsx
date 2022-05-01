@@ -6,6 +6,7 @@ import { Header } from './ui/Header';
 import { useRouter } from 'next/router';
 import { Notification } from './ui/Notification';
 import { useNotificationState } from 'contexts/NotificationContext';
+import { useContentUpdate } from 'contexts/ContentContext';
 
 export const Layout = ({
   children,
@@ -21,6 +22,7 @@ export const Layout = ({
   const notificationState = useNotificationState();
   const [{ data: connectData, error: connectError }, connect] = useConnect();
   const [{ data: accountData, error: accountError }, disconnect] = useAccount();
+  const setContent = useContentUpdate();
 
   useEffect(() => {
     if (accountError) {
@@ -74,6 +76,7 @@ export const Layout = ({
 
   const handleSignOut = async () => {
     disconnect();
+    setContent(undefined);
     await signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_URL}` });
   };
 

@@ -1,7 +1,7 @@
 import { useContentUpdate } from 'contexts/ContentContext';
 import { useState } from 'react';
-
-export const useVerify = () => {
+const env = process.env.NEXT_PUBLIC_ENV as string;
+export const useVerify = (address: string) => {
   const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const setContent = useContentUpdate();
@@ -28,7 +28,7 @@ export const useVerify = () => {
         })
       ).json();
 
-      setContent({ contents: result.contents });
+      setContent({ contents: result.contents, github: result.github });
     } catch (e) {
       console.log(e);
       setError(e as Error);
