@@ -69,7 +69,7 @@ export default function useMint(): ReturnParameters {
 
         console.log(publicSignals, proof);
         const solidityProof = packToSolidityProof(proof);
-        // For now we have testnet only
+        // For now we have testnet only. 1337 is local host
         const contractAddress =
           networks.selectedChain === '1337'
             ? '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
