@@ -46,6 +46,21 @@ const calStars = (receivedStars: number, groups: Group[]): Content | null => {
   };
 };
 
+const calPublicRepos = (
+  public_repos: number,
+  groups: Group[],
+): Content | null => {
+  const matchCriteria = groups
+    .filter(g => g.attr_key === 'public_repos' && public_repos > g.criteria)
+    .sort((a, b) => b.criteria - a.criteria);
+
+  if (!matchCriteria.length) return null;
+  return {
+    groupId: matchCriteria[0].id,
+    groupName: matchCriteria[0].name,
+    groupNullifier: matchCriteria[0].nullifier,
+  };
+};
 export const mergeContents = (
   github: GithubUser,
   commitments: Commitment[],
@@ -71,6 +86,11 @@ export const mergeContents = (
 
   if (starContent) {
     contents.push(starContent);
+  }
+
+  const publicReposContent = calPublicRepos(github.public_repos || 0, groups);
+  if (publicReposContent) {
+    contents.push(publicReposContent);
   }
 
   // merge commitments if exists

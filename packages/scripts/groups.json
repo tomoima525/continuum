@@ -1,5 +1,10 @@
 [
   {
+    "name": "1+ years on Github",
+    "criteria": 1,
+    "attr_key": "created_at"
+  },
+  {
     "name": "2+ years on Github",
     "criteria": 2,
     "attr_key": "created_at"
@@ -63,5 +68,30 @@
     "name": "200+ received stars",
     "criteria": 200,
     "attr_key": "receivedStars"
+  },
+  {
+    "name": "5+ public repos",
+    "criteria": 5,
+    "attr_key": "public_repos"
+  },
+  {
+    "name": "10+ public repos",
+    "criteria": 10,
+    "attr_key": "public_repos"
+  },
+  {
+    "name": "20+ public repos",
+    "criteria": 20,
+    "attr_key": "public_repos"
+  },
+  {
+    "name": "50+ public repos",
+    "criteria": 50,
+    "attr_key": "public_repos"
+  },
+  {
+    "name": "100+ public repos",
+    "criteria": 100,
+    "attr_key": "public_repos"
   }
 ]
