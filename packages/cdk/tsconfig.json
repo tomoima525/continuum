@@ -6,6 +6,7 @@
     "lib": ["es2018"],
     "declaration": true,
     "strict": true,
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
@@ -25,7 +26,10 @@
       "/opt/nodejs/dynamodb-utils": [
         "functions/layers/dynamodb/nodejs/dynamodb-utils"
       ],
-      "/opt/nodejs/cdk-crypto": ["functions/layers/cdk-crypto/nodejs/index"]
+      "/opt/nodejs/cdk-crypto": ["functions/layers/cdk-crypto/nodejs/index"],
+      "/opt/nodejs/chrome-aws-lambda": [
+        "functions/layers/chrome/nodejs/chrome-aws-lambda"
+      ]
     }
   },
   "exclude": ["node_modules", "cdk.out"]
