@@ -13,7 +13,7 @@ Continuum is a background checker using Zero Knowledge proof. This project is a 
 
 # Preparation
 
-Call `yarn install` at the root of the project.
+Call `yarn install --ignore-engines` at the root of the project. (ipfs contains node v16. It is used in Lambda but not required for the whole project)
 
 ### Github auth
 
