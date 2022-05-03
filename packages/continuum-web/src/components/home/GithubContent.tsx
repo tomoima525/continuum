@@ -119,7 +119,7 @@ export const GithubContent = (props: GithubContentProps) => {
       </div>
       {props.content?.contents && (
         <div className="pt-4">
-          <p className="text-xl mb-1">Data to reveal</p>
+          <p className="text-xl mb-1">Reputation to reveal</p>
           <ul role="list" className="py-4">
             <li key="Header">
               <div className="flex flex-row border-b-2 border-gray-700 mb-3">
@@ -132,8 +132,8 @@ export const GithubContent = (props: GithubContentProps) => {
                   height={32}
                   draggable="false"
                 />
-                <div className="flex-1 text-lg">Criteria</div>
-                <div className="flex-1 text-lg text-center">Data Revealed</div>
+                <div className="flex-1 text-lg">Reputation</div>
+                <div className="flex-1 text-lg text-center">Revealed?</div>
                 <div className="text-center text-lg w-40">Action</div>
               </div>
             </li>

@@ -28,8 +28,10 @@ export class CdkStack extends Stack {
 
     // Lambda
     const groupLambda = new GroupLambdaStack(this, 'GroupLambda', {
-      dbUtilLayer: layer.dbUtilLayer,
+      chromeLayer: layer.chromeLayer,
       continuumTable: dynamoDBStack.continuumTable,
+      dbUtilLayer: layer.dbUtilLayer,
+      secretManagerPolicy,
     });
 
     const authGithub = new AuthLambdaStack(this, 'AuthLambda', {

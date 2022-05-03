@@ -10,7 +10,7 @@ export default function Certificate({ walletname, criteria }: Props) {
   return (
     <div className="flex w-[467px] h-[400px] justify-between flex-col bg-gradient-to-tr from-pink-400 via-lime-400 to-teal-300 overflow-hidden rounded-2xl drop-shadow-xl ">
       <div className="text-3xl font-semibold self-center p-4">
-        PROOF OF GITHUB ACCOUNT
+        PROOF OF GITHUB REPUTATION
       </div>
       <div className="self-center flex-wrap">
         <Image

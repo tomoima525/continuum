@@ -1,0 +1,19 @@
+{
+  "name": "genmetadata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json --skipLibCheck"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.95"
+  },
+  "dependencies": {
+    "nft.storage": "^6.2.0"
+  }
+}
