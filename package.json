@@ -13,7 +13,9 @@
       "**/circomlibjs/**",
       "**/circomlib",
       "**/snarkjs",
-      "**/nft.storage"
+      "**/nft.storage",
+      "**/ipfs-unixfs-exporter",
+      "**/puppeteer"
     ]
   },
   "devDependencies": {
