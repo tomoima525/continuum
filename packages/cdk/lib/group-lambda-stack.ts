@@ -4,13 +4,16 @@ import {
   aws_lambda as lambda,
   Duration,
 } from 'aws-cdk-lib';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import * as path from 'path';
 import { Construct } from 'constructs';
+import { deployEnv } from './envSpecific';
 
 export interface GroupLambdaStackProps {
   chromeLayer: lambda.LayerVersion;
   continuumTable: dynamodb.ITable;
   dbUtilLayer: lambda.LayerVersion;
+  secretManagerPolicy: PolicyStatement;
 }
 export class GroupLambdaStack extends Construct {
   public readonly appendLeafLambda: lambda_nodejs.NodejsFunction;
@@ -118,11 +121,13 @@ export class GroupLambdaStack extends Construct {
       environment: {
         TableName: props.continuumTable.tableName,
         SITE_URL: 'https://continuum-swart.vercel.app',
+        nftstorage_key_id: `continuum_nft_key_${deployEnv()}`,
       },
-      timeout: Duration.seconds(25),
-      memorySize: 512,
+      timeout: Duration.minutes(1),
+      memorySize: 1536,
       layers: [props.dbUtilLayer, customNodeLayer, props.chromeLayer],
     });
     props.continuumTable.grantReadWriteData(this.genMetadataLambda);
+    this.genMetadataLambda.addToRolePolicy(props.secretManagerPolicy);
   }
 }
