@@ -12,11 +12,9 @@
       "**/circomlibjs",
       "**/circomlibjs/**",
       "**/circomlib",
-      "**/snarkjs"
+      "**/snarkjs",
+      "**/nft.storage"
     ]
-  },
-  "engines": {
-    "node": ">=16.0.0"
   },
   "devDependencies": {
     "@types/eslint": "^8.4.1",
