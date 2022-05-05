@@ -22,9 +22,7 @@ export const IPFSImage = (props: Props) => {
       }
       // https://nftstorage.link/ipfs/
       const nftLink = ipfsToNftLink(props.metadataUrl);
-      console.log(nftLink);
       const r = await (await fetch(nftLink)).json();
-      console.log('====', ipfsToNftLink(r.image));
       setPhotoUrl(ipfsToNftLink(r.image));
     };
     getUrl();

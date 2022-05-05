@@ -50,6 +50,7 @@ export interface Commitment {
   userId: string;
   groupId: string;
   hash: string;
+  metadata?: string;
   mintAddress?: string;
   createdAt: string;
 }
@@ -58,6 +59,7 @@ export interface CommitmentUpdate {
   userId?: string;
   groupId?: string;
   hash?: string;
+  metadata?: string;
   mintAddress?: string;
   createdAt?: string;
 }

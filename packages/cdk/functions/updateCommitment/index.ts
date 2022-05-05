@@ -11,12 +11,14 @@ export const handler = async function (
 ): Promise<APIGatewayProxyResult> {
   const requestBody = JSON.parse(event.body || '');
   const mintAddress = requestBody.mintAddress;
+  const metadata = requestBody.metadata;
   const id = requestBody.id;
   const TableName = process.env.TableName as string;
 
   const commitment = {
     id,
     mintAddress,
+    metadata,
   };
 
   console.log('=====', commitment);

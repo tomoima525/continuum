@@ -114,6 +114,7 @@ export default function useMint(): ReturnParameters {
           const body = JSON.stringify({
             id: commitmentId,
             mintAddress: transaction.hash,
+            metadata: pr[1].url,
           });
           const r = await (
             await fetch(

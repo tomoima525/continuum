@@ -14,7 +14,9 @@ export const ReputationComponent = (props: Props) => {
           <IPFSImage metadataUrl={props.metadata} size={180} />
         </div>
         <h3 className="mt-6 text-lg font-medium">{props.title}</h3>
-        <div className="text-gray-300 text-m">{props.revealStatus}</div>
+        <div className="text-gray-300 text-m">
+          Revealed?: {props.revealStatus}
+        </div>
         <div className="p-2 self-center">{props.children}</div>
       </div>
     </div>

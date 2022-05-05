@@ -103,6 +103,7 @@ export const mergeContents = (
       commitmentId: c?.id,
       commitmentHash: c?.hash,
       mintAddress: c?.mintAddress,
+      metadata: c?.metadata,
     };
   });
 
