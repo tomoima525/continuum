@@ -13,20 +13,31 @@ export enum Action {
 interface ActionButtonProps {
   handleAction: (action: Action) => Promise<unknown>;
   commitmentHash: string | undefined;
+  metadata?: string;
   mintAddress: string | undefined;
   disable?: boolean;
 }
-
+const ipfsToNftLink = (ipfs: string) => {
+  return ipfs.replace('ipfs://', 'https://nftstorage.link/ipfs/');
+};
 const ActionButton = (props: ActionButtonProps) => {
   if (props.mintAddress) {
+    const link = props?.metadata && ipfsToNftLink(props.metadata);
     return (
       <div className=" items-center">
         Minted
         <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
-          <div className="flex-shrink self-center justify-center items-center p-2 underline hover:text-gray-500">
+          <div className="flex-shrink self-center justify-center items-center py-2 underline hover:text-gray-500">
             Tx: {shorten(props.mintAddress)}
           </div>
         </a>
+        {props.metadata && (
+          <a href={link}>
+            <div className="flex-shrink self-center justify-center items-center underline hover:text-gray-500">
+              ipfs: {shorten(props.metadata)}
+            </div>
+          </a>
+        )}
       </div>
     );
   }
@@ -140,11 +151,13 @@ export const GithubContent = (props: GithubContentProps) => {
                       ? `Yes (commitment: ${shorten(content.commitmentHash)})`
                       : 'No'
                   }
+                  metadata={content.metadata}
                 >
                   <ActionButton
                     disable={props.disable}
                     commitmentHash={content.commitmentHash}
                     mintAddress={content.mintAddress}
+                    metadata={content.metadata}
                     handleAction={handleAction({
                       commitmentId: content.commitmentId,
                       groupId: content.groupId,

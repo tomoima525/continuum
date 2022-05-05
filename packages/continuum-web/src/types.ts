@@ -38,6 +38,7 @@ export interface Content {
   groupName: string; // e.g. "More than 10 followers"
   groupNullifier: string;
   mintAddress?: string; // e.g. "0xfkl..." if minted
+  metadata?: string; // ipfs://xxxx/metadata.json
 }
 
 // zkp related from Semaphore

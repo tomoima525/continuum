@@ -10,7 +10,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['github.com', 'avatars.githubusercontent.com'],
+    domains: ['github.com', 'avatars.githubusercontent.com', 'nftstorage.link'],
   },
 };
 
