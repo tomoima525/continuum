@@ -19,10 +19,12 @@ interface IContinuum {
     /// @param nullifierHash: Nullifier hash.
     /// @param externalNullifier: External nullifier.
     /// @param proof: Zero-knowledge proof.
+    /// @param tokenURI: tokenURI for nft.
     function mint(
         uint256 root,
         uint256 nullifierHash,
         uint256 externalNullifier,
-        uint256[8] calldata proof
+        uint256[8] calldata proof,
+        string memory tokenURI
     ) external;
 }

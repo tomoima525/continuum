@@ -76,7 +76,7 @@ export const Layout = ({
 
   const handleSignOut = async () => {
     disconnect();
-    setContent(undefined);
+    setContent({ github: null, contents: null });
     await signOut({ callbackUrl: `${process.env.NEXT_PUBLIC_URL}` });
   };
 

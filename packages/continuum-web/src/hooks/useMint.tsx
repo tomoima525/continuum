@@ -14,6 +14,25 @@ type ReturnParameters = {
   ) => Promise<unknown>;
   mintStatus: string | null;
 };
+
+const fetchMetadata = async (address: string, groupId: string) => {
+  const metadataBody = JSON.stringify({
+    address,
+    groupId,
+  });
+  const metadata = await (
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/metadata`, {
+      method: 'POST',
+      body: metadataBody,
+    })
+  ).json();
+  console.log(metadata);
+  if (!metadata.url) {
+    console.log('failed to create metadata', metadata);
+    throw new Error('failed to upload');
+  }
+  return metadata;
+};
 export default function useMint(): ReturnParameters {
   const [mintStatus, setMintStatus] = useState<string | null>(null);
   const contentData = useContentState();
@@ -61,14 +80,15 @@ export default function useMint(): ReturnParameters {
 
         console.log('====== generating proof', witness);
         // Step 3 Generate Proof
-        const { publicSignals, proof } = await genProof(
-          witness,
-          zkFiles.wasmFilePath,
-          zkFiles.zkeyFilePath,
-        );
 
-        console.log(publicSignals, proof);
-        const solidityProof = packToSolidityProof(proof);
+        // Step 4. generate meta data & upload to ipfs
+        const r = await Promise.all([
+          genProof(witness, zkFiles.wasmFilePath, zkFiles.zkeyFilePath),
+          fetchMetadata(await signer.getAddress(), groupId),
+        ]);
+        console.log(r);
+
+        const solidityProof = packToSolidityProof(r[0].proof);
         // For now we have testnet only. 1337 is local host
         const contractAddress =
           networks.selectedChain === '1337'
@@ -80,10 +100,11 @@ export default function useMint(): ReturnParameters {
         const transaction = await contract
           .connect(signer)
           .mint(
-            publicSignals.merkleRoot,
-            publicSignals.nullifierHash,
-            publicSignals.externalNullifier,
+            r[0].publicSignals.merkleRoot,
+            r[0].publicSignals.nullifierHash,
+            r[0].publicSignals.externalNullifier,
             solidityProof,
+            r[1].url,
           );
 
         // Step 4 Update DB

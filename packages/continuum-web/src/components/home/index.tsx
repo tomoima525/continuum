@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useVerify } from 'hooks/useVerify';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CTA } from './CTA';
 import { Action, GithubContent } from './GithubContent';
 import useGroups from 'hooks/useGroup';
@@ -9,6 +9,7 @@ import useMint from 'hooks/useMint';
 import { Signer } from 'ethers';
 import { useContentState } from 'contexts/ContentContext';
 import { useSigner } from 'wagmi';
+import { useStopWatch } from 'hooks/useStopWatch';
 
 export const Home = () => {
   const router = useRouter();
@@ -19,6 +20,7 @@ export const Home = () => {
   const [{ data: signer }] = useSigner();
   const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
   const { mintStatus, mint } = useMint();
+  const { seconds, start, reset } = useStopWatch();
   const code = router.query.code as string;
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export const Home = () => {
   }, [code, address]);
 
   const reveal = async (signer: Signer, groupId: string, groupName: string) => {
+    start();
     const identityCommitment = await generateIdentityCommitment(
       signer,
       groupId,
@@ -45,6 +48,7 @@ export const Home = () => {
       console.log('=== address', address);
       await joinGroup(identityCommitment, groupId, groupName, address);
     }
+    reset();
   };
   const proofAndMint = async (
     signer: Signer,
@@ -52,8 +56,10 @@ export const Home = () => {
     groupNullifier: string,
     commitmentId?: string,
   ) => {
+    start();
     console.log('===mint', groupNullifier);
     await mint(signer, groupId, groupNullifier, commitmentId);
+    reset();
   };
 
   const handleAction =
@@ -111,7 +117,7 @@ export const Home = () => {
                 <div className="self-center mx-2">
                   <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
                 </div>
-                {mintStatus}
+                {mintStatus}: {seconds} sec passed
               </div>
             )}
             {addGroupStatus && (
@@ -119,7 +125,7 @@ export const Home = () => {
                 <div className="self-center mx-2">
                   <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
                 </div>
-                {addGroupStatus}
+                {addGroupStatus}: {seconds} sec passed
               </div>
             )}
           </div>
