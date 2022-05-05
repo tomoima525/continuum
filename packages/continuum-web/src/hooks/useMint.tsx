@@ -82,11 +82,11 @@ export default function useMint(): ReturnParameters {
         // Step 3 Generate Proof
 
         // Step 4. generate meta data & upload to ipfs
-        const r = await Promise.all([
+        const pr = await Promise.all([
           genProof(witness, zkFiles.wasmFilePath, zkFiles.zkeyFilePath),
           fetchMetadata(await signer.getAddress(), groupId),
         ]);
-        console.log(r);
+        console.log(pr);
 
         const solidityProof = packToSolidityProof(r[0].proof);
         // For now we have testnet only. 1337 is local host
@@ -100,11 +100,11 @@ export default function useMint(): ReturnParameters {
         const transaction = await contract
           .connect(signer)
           .mint(
-            r[0].publicSignals.merkleRoot,
-            r[0].publicSignals.nullifierHash,
-            r[0].publicSignals.externalNullifier,
+            pr[0].publicSignals.merkleRoot,
+            pr[0].publicSignals.nullifierHash,
+            pr[0].publicSignals.externalNullifier,
             solidityProof,
-            r[1].url,
+            pr[1].url,
           );
 
         // Step 4 Update DB
@@ -131,6 +131,7 @@ export default function useMint(): ReturnParameters {
               return {
                 ...content,
                 mintAddress: transaction.hash,
+                metadata: pr[1].url,
               };
             }
             return content;
