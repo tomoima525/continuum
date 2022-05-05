@@ -132,4 +132,9 @@ nullifierHash: 0x239bb965e269f6d79442fbaff13689546108b8e1fde2f632ed9e4b23388bd7b
 externalNullier: 0x6af4841553646671a088d658246d9877
 ```
 
-Input values above to test the contract
+Input values above to test the contract. You need to add `""` to proof inputs `["0x...", "0x...", ..]` or you'll get argument error
+
+# Contract
+
+Testnet: 0x008150FD2e971857058Ee14254439691edb25490
+Mainet: TBD
