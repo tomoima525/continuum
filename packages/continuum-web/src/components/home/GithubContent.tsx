@@ -4,6 +4,7 @@ import { GradientBtn } from 'components/ui/GradientBtn';
 import { DynamicColorBtn } from 'components/ui/DynamicColorBtn';
 import { shorten } from 'utils/commitment';
 import { State } from 'contexts/ContentContext';
+import { ReputationComponent } from './ReputationComponent';
 
 export enum Action {
   MINT,
@@ -19,11 +20,14 @@ interface ActionButtonProps {
 const ActionButton = (props: ActionButtonProps) => {
   if (props.mintAddress) {
     return (
-      <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
-        <div className="flex-shrink self-center justify-center items-center p-3 underline hover:text-gray-500">
-          {shorten(props.mintAddress)}
-        </div>
-      </a>
+      <div className=" items-center">
+        Minted
+        <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
+          <div className="flex-shrink self-center justify-center items-center p-2 underline hover:text-gray-500">
+            Tx: {shorten(props.mintAddress)}
+          </div>
+        </a>
+      </div>
     );
   }
   const { handleAction } = props;
@@ -120,46 +124,35 @@ export const GithubContent = (props: GithubContentProps) => {
       {props.content?.contents && (
         <div className="pt-4">
           <p className="text-xl mb-1">Reputation to reveal</p>
-          <ul role="list" className="py-4">
-            <li key="Header">
-              <div className="flex flex-row border-b-2 border-gray-700 mb-3">
-                <Image
-                  src="/GitHub-Mark-64px.png"
-                  alt="github"
-                  className="rounded-2xl absolute z-10"
-                  layout="intrinsic"
-                  width={32}
-                  height={32}
-                  draggable="false"
-                />
-                <div className="flex-1 text-lg">Reputation</div>
-                <div className="flex-1 text-lg text-center">Revealed?</div>
-                <div className="text-center text-lg w-40">Action</div>
-              </div>
-            </li>
+          <ul
+            role="list"
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+          >
             {props.content.contents.map(content => (
-              <li key={content.groupId}>
-                <div className="flex flex-row mb-2 items-center">
-                  <div className="flex-1">{content.groupName}</div>
-                  <div className="flex-1 text-center">
-                    {content.commitmentHash
+              <li
+                key={content.groupId}
+                className="col-span-1 flex flex-col text-center bg-gray-800 rounded-lg shadow divide-y divide-gray-200"
+              >
+                <ReputationComponent
+                  title={content.groupName}
+                  revealStatus={
+                    content.commitmentHash
                       ? `Yes (commitment: ${shorten(content.commitmentHash)})`
-                      : 'No'}
-                  </div>
-                  <div className="mx-2">
-                    <ActionButton
-                      disable={props.disable}
-                      commitmentHash={content.commitmentHash}
-                      mintAddress={content.mintAddress}
-                      handleAction={handleAction({
-                        commitmentId: content.commitmentId,
-                        groupId: content.groupId,
-                        groupName: content.groupName,
-                        groupNullifier: content.groupNullifier,
-                      })}
-                    />
-                  </div>
-                </div>
+                      : 'No'
+                  }
+                >
+                  <ActionButton
+                    disable={props.disable}
+                    commitmentHash={content.commitmentHash}
+                    mintAddress={content.mintAddress}
+                    handleAction={handleAction({
+                      commitmentId: content.commitmentId,
+                      groupId: content.groupId,
+                      groupName: content.groupName,
+                      groupNullifier: content.groupNullifier,
+                    })}
+                  />
+                </ReputationComponent>
               </li>
             ))}
           </ul>
