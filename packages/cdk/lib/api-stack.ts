@@ -9,6 +9,7 @@ import { deployEnv } from './envSpecific';
 interface GroupApiSetupProps {
   appendLeaf: lambda.NodejsFunction;
   createMerkleProof: lambda.NodejsFunction;
+  genMetadata: lambda.NodejsFunction;
   githubAuth: lambda.NodejsFunction;
   updateCommitment: lambda.NodejsFunction;
 }
@@ -37,8 +38,13 @@ export class GroupApiSetup extends Construct {
       },
     });
 
-    const { appendLeaf, createMerkleProof, githubAuth, updateCommitment } =
-      props;
+    const {
+      appendLeaf,
+      createMerkleProof,
+      genMetadata,
+      githubAuth,
+      updateCommitment,
+    } = props;
     const merkleTreeResource = api.root.addResource('merkleTree');
     const appendResource = merkleTreeResource.addResource('append');
     appendResource.addMethod(
@@ -63,6 +69,12 @@ export class GroupApiSetup extends Construct {
     commitmentUpdateResource.addMethod(
       'POST',
       new apigateway.LambdaIntegration(updateCommitment),
+    );
+
+    const genMetadataResource = api.root.addResource('metadata');
+    genMetadataResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(genMetadata),
     );
     new CfnOutput(this, 'ContinuumApiUrl', { value: api.url });
   }
