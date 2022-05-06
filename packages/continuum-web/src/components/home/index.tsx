@@ -16,7 +16,7 @@ export const Home = () => {
   const session = useSession();
   const contentData = useContentState();
   const address = session.data?.address as string;
-  const [{ loading: verifyLoading }, verifygithub] = useVerify(address);
+  const [{ loading: verifyLoading }, verifygithub] = useVerify();
   const [{ data: signer }] = useSigner();
   const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
   const { mintStatus, mint } = useMint();

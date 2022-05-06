@@ -1,7 +1,7 @@
 import { useContentUpdate } from 'contexts/ContentContext';
 import { useState } from 'react';
-const env = process.env.NEXT_PUBLIC_ENV as string;
-export const useVerify = (address: string) => {
+
+export const useVerify = () => {
   const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const setContent = useContentUpdate();
