@@ -136,5 +136,11 @@ Input values above to test the contract. You need to add `""` to proof inputs `[
 
 # Contract
 
+### Harmony
+
 Testnet: 0x008150FD2e971857058Ee14254439691edb25490
-Mainet: TBD
+Mainet: 0x1BBC601bF0b2C87E18561019488318C3C06daC29
+
+### Polygon
+
+TBD

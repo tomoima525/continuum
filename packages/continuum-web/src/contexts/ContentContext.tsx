@@ -5,7 +5,6 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
-  useState,
 } from 'react';
 import { Content, GithubUser } from 'types';
 
