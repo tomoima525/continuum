@@ -61,7 +61,9 @@ export const handler = async function (
   const client_id = isLocal
     ? '52f7af74bd2002d1e28d'
     : (process.env.GITHUB_CLIENT_ID as string);
-  const secret_id = `continuum_github_key_${isLocal ? 'local' : deployEnv()}`;
+  const secret_id = isLocal
+    ? (process.env.continuum_github_key_local as string)
+    : (process.env.continuum_github_key as string);
   const client_secret = await getSecret(secret_id);
   const redirect_uri = isLocal
     ? `http://localhost:3000/home`

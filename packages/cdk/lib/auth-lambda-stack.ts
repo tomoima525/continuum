@@ -41,6 +41,8 @@ export class AuthLambdaStack extends Construct {
             deployEnv() === 'dev'
               ? 'https://continuum-swart.vercel.app'
               : 'https://continuum.tomoima525.com',
+          continuum_github_key: `continuum_github_key_${deployEnv()}`,
+          continuum_github_key_local: 'continuum_github_key_local',
         },
         timeout: Duration.seconds(25),
         memorySize: 256,
