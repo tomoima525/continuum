@@ -33,7 +33,7 @@ const ActionButton = (props: ActionButtonProps) => {
     return (
       <div className=" items-center">
         Minted
-        <a href={`${network}/tx/${props.mintAddress}`}>
+        <a href={`${network}tx/${props.mintAddress}`}>
           <div className="flex-shrink self-center justify-center items-center py-2 underline hover:text-gray-500">
             Tx: {shorten(props.mintAddress)}
           </div>
