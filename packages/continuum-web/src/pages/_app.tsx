@@ -10,9 +10,12 @@ import networks from '../utils/networks.json';
 
 // Chains for connectors to support
 // https://docs.harmony.one/home/developers/network-and-faucets
+const env = process.env.NEXT_PUBLIC_ENV as string;
+const selectedChain =
+  env === 'dev' ? networks[1666700000].chainId : networks[1666600000].chainId;
 
 const provider = providers.getDefaultProvider(
-  networks[networks.selectedChain].rpcUrls[0],
+  networks[selectedChain].rpcUrls[0],
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
