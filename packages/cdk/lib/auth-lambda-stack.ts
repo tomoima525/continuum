@@ -33,8 +33,14 @@ export class AuthLambdaStack extends Construct {
         ),
         environment: {
           TableName: props.continuumTable.tableName,
-          GITHUB_CLIENT_ID: deployEnv() === 'dev' ? 'b3618911274da67ecaf8' : '',
-          REDIRECT_URL: 'https://continuum-swart.vercel.app',
+          GITHUB_CLIENT_ID:
+            deployEnv() === 'dev'
+              ? 'b3618911274da67ecaf8'
+              : 'f77d2946ff61985f83d0',
+          REDIRECT_URL:
+            deployEnv() === 'dev'
+              ? 'https://continuum-swart.vercel.app'
+              : 'https://continuum.tomoima525.com',
         },
         timeout: Duration.seconds(25),
         memorySize: 256,

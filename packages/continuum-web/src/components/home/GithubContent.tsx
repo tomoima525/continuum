@@ -5,6 +5,7 @@ import { DynamicColorBtn } from 'components/ui/DynamicColorBtn';
 import { shorten } from 'utils/commitment';
 import { State } from 'contexts/ContentContext';
 import { ReputationComponent } from './ReputationComponent';
+import networks from 'utils/networks.json';
 
 export enum Action {
   MINT,
@@ -20,13 +21,19 @@ interface ActionButtonProps {
 const ipfsToNftLink = (ipfs: string) => {
   return ipfs.replace('ipfs://', 'https://nftstorage.link/ipfs/');
 };
+const env = process.env.NEXT_PUBLIC_ENV as string;
+const network =
+  env === 'dev'
+    ? networks[1666700000].blockExplorerUrls
+    : networks[1666600000].blockExplorerUrls;
+
 const ActionButton = (props: ActionButtonProps) => {
   if (props.mintAddress) {
     const link = props?.metadata && ipfsToNftLink(props.metadata);
     return (
       <div className=" items-center">
         Minted
-        <a href={`https://explorer.pops.one/tx/${props.mintAddress}`}>
+        <a href={`${network}/tx/${props.mintAddress}`}>
           <div className="flex-shrink self-center justify-center items-center py-2 underline hover:text-gray-500">
             Tx: {shorten(props.mintAddress)}
           </div>

@@ -120,7 +120,10 @@ export class GroupLambdaStack extends Construct {
       ),
       environment: {
         TableName: props.continuumTable.tableName,
-        SITE_URL: 'https://continuum-swart.vercel.app',
+        SITE_URL:
+          deployEnv() === 'dev'
+            ? 'https://continuum-swart.vercel.app'
+            : 'https://continuum.tomoima525.com',
         nftstorage_key_id: `continuum_nft_key_${deployEnv()}`,
       },
       timeout: Duration.minutes(1),

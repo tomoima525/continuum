@@ -4,7 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "seedZero": "yarn ts-node ./seedZeroHashes.ts"
+    "seedZero:dev": "DB_ENV=dev yarn ts-node ./seedZeroHashes.ts",
+    "seedZero:prod": "DB_ENV=prod yarn ts-node ./seedZeroHashes.ts",
+    "seedGroup:dev": "DB_ENV=dev yarn ts-node ./seedGroups.ts",
+    "seedGroup:prod": "DB_ENV=prod yarn ts-node ./seedGroups.ts"
   },
   "dependencies": {
     "@zk-kit/incremental-merkle-tree": "^0.4.3",

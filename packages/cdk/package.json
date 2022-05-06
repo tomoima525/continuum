@@ -9,7 +9,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk --profile=knot"
+    "cdk:deploy": "npx cdk deploy --profile=knot",
+    "cdk:deploy:prod": "DEPLOY_ENV=prod npx cdk deploy --profile=knot"
   },
   "devDependencies": {
     "@types/jest": "^26.0.10",
