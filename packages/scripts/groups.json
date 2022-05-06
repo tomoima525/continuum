@@ -20,6 +20,11 @@
     "attr_key": "created_at"
   },
   {
+    "name": "8+ years on Github",
+    "criteria": 8,
+    "attr_key": "created_at"
+  },
+  {
     "name": "10+ followers",
     "criteria": 10,
     "attr_key": "followers"
@@ -67,6 +72,26 @@
   {
     "name": "200+ received stars",
     "criteria": 200,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "300+ received stars",
+    "criteria": 300,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "500+ received stars",
+    "criteria": 500,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "700+ received stars",
+    "criteria": 700,
+    "attr_key": "receivedStars"
+  },
+  {
+    "name": "1000+ received stars",
+    "criteria": 1000,
     "attr_key": "receivedStars"
   },
   {
