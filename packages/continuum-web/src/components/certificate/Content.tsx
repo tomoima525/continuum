@@ -10,14 +10,9 @@ export default function Content({
   criteria = 'Your github account',
   walletname = '0x123456789',
 }: Props) {
-  const isLong = criteria.length > 15;
   return (
     <div className="flex flex-col">
-      <p
-        className={`${
-          isLong ? 'text-2xl' : 'text-4xl'
-        } font-semibold mb-2 mt-3`}
-      >
+      <p className={'text-4xl font-semibold mb-2 mt-3'}>
         <span className={'flex items-center rounded relative'}>{criteria}</span>
       </p>
       <div className="text-2xl">
