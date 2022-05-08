@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useVerify } from 'hooks/useVerify';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { CTA } from './CTA';
 import { Action, GithubContent } from './GithubContent';
 import useGroups from 'hooks/useGroup';
@@ -17,7 +17,7 @@ export const Home = () => {
   const contentData = useContentState();
   const address = session.data?.address as string;
   const [{ loading: verifyLoading }, verifygithub] = useVerify();
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
   const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
   const { mintStatus, mint } = useMint();
   const { seconds, start, reset } = useStopWatch();
@@ -92,28 +92,15 @@ export const Home = () => {
     (addGroupStatus?.length || 0) > 0 || (mintStatus?.length || 0) > 0;
   return (
     <div className="max-w-7xl mx-auto py-10 md:py-3 h-full bg-proved-500">
-      {contentData.contents ? (
-        <GithubContent
-          content={contentData}
-          handleAction={handleAction}
-          disable={disable}
-        />
-      ) : (
-        <CTA loading={verifyLoading} />
-      )}
-      <header>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl pt-6 font-bold leading-tight text-white">
-            Proof progress
-          </h2>
-        </div>
-      </header>
       <main>
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 text-white">
+          <div className="text-lg ">
+            Reveal and prove your github reputation
+          </div>
           {/* Replace with your content */}
-          <div className="px-4 py-8 sm:px-0">
+          <div className="py-3">
             {mintStatus && (
-              <div className="text-xl self-center flex flex-row text-white">
+              <div className="text-xl self-center flex flex-row">
                 <div className="self-center mx-2">
                   <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
                 </div>
@@ -121,7 +108,7 @@ export const Home = () => {
               </div>
             )}
             {addGroupStatus && (
-              <div className="text-xl self-center text-white flex flex-row">
+              <div className="text-xl self-center flex flex-row">
                 <div className="self-center mx-2">
                   <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
                 </div>
@@ -130,6 +117,15 @@ export const Home = () => {
             )}
           </div>
         </div>
+        {contentData.contents ? (
+          <GithubContent
+            content={contentData}
+            handleAction={handleAction}
+            disable={disable}
+          />
+        ) : (
+          <CTA loading={verifyLoading} />
+        )}
       </main>
     </div>
   );
