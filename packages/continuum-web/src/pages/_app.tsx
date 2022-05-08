@@ -7,13 +7,7 @@ import type { AppProps } from 'next/app';
 import { Seo } from 'components/ui/Seo';
 import { ContentProvider } from 'contexts/ContentContext';
 import networks from '../utils/networks.json';
-
-// Chains for connectors to support
-// https://docs.harmony.one/home/developers/network-and-faucets
-const env = process.env.NEXT_PUBLIC_ENV as string;
-// falls back to dev
-const selectedChain =
-  env === 'prod' ? networks[1666600000].chainId : networks[1666700000].chainId;
+import { selectedChain } from 'utils/selectedChain';
 
 const provider = providers.getDefaultProvider(
   networks[selectedChain].rpcUrls[0],
