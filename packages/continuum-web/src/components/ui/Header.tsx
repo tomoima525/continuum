@@ -48,12 +48,16 @@ const WalletButton = ({
         break;
       default:
         setShouldSwitch(true);
+        setNetworkName(`${activeChain.name} (Not supported)`);
     }
   }, [activeChain]);
 
   if (shouldSwitch) {
     return (
       <div className="hidden md:flex md:items-center md:ml-4">
+        {networkName && (
+          <div className="text-lg text-gray-500 pr-3">{networkName}</div>
+        )}
         <GradientBtn onClick={switchNetwork} disabled={isLoggingIn}>
           Switch Network
         </GradientBtn>
@@ -70,9 +74,7 @@ const WalletButton = ({
     return (
       <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
         {networkName && (
-          <div className="text-lg text-gray-500 pr-3">
-            Network: {networkName}
-          </div>
+          <div className="text-lg text-gray-500 pr-3">{networkName}</div>
         )}
         <Menu as="div" className="ml-3 relative">
           <div>
@@ -115,6 +117,7 @@ const WalletButton = ({
     </div>
   );
 };
+
 export const Header = ({
   isLoggingIn,
   onLoginRequested,
