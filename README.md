@@ -1,5 +1,8 @@
 Continuum is a background checker using Zero Knowledge proof. This project is a proof of concept to showcase how revealing your data works with zero knowledge proof.
 
+testnet page: https://continuum-swart.vercel.app/  
+mainnet page: https://continuum.tomoima525.com/
+
 <p align="center">
 <img width="700" alt="screen" src="https://user-images.githubusercontent.com/6277118/167317833-e0e478b0-4e0b-41c0-8e58-b34045d14f59.png">
 </p>
