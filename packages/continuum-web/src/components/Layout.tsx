@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getCsrfToken, signIn, signOut } from 'next-auth/react';
 import { SiweMessage } from 'siwe';
-import { useAccount, useConnect, useNetwork, useSignMessage } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useNetwork,
+  useSignMessage,
+} from 'wagmi';
 import { Header } from './ui/Header';
-import { useRouter } from 'next/router';
 import { Notification } from './ui/Notification';
 import { useNotificationState } from 'contexts/NotificationContext';
 import { useContentUpdate } from 'contexts/ContentContext';
@@ -16,12 +21,17 @@ export const Layout = ({
   disableFooter?: boolean;
 }) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const router = useRouter();
-  const [, signMessage] = useSignMessage();
-  const [{ data: networkData }] = useNetwork();
+  const { signMessageAsync } = useSignMessage();
+  const { activeChain } = useNetwork();
   const notificationState = useNotificationState();
-  const [{ data: connectData, error: connectError }, connect] = useConnect();
-  const [{ data: accountData, error: accountError }, disconnect] = useAccount();
+  const {
+    connectors,
+    isConnected,
+    error: connectError,
+    connect,
+  } = useConnect();
+  const { data: accountData, error: accountError } = useAccount();
+  const { disconnect } = useDisconnect();
   const setContent = useContentUpdate();
 
   useEffect(() => {
@@ -34,13 +44,13 @@ export const Layout = ({
   }, [accountError, connectError]);
 
   useEffect(() => {
-    if (!connectData.connected) {
-      const connector = connectData.connectors.filter(
+    if (!isConnected) {
+      const connector = connectors.filter(
         connector => connector.name === 'MetaMask',
       );
       connect(connector[0]);
     }
-  }, [connect, connectData.connected, connectData.connectors]);
+  }, [connect, connectors, isConnected]);
 
   const handleLoginRequest = async () => {
     setIsLoggingIn(true);
@@ -51,16 +61,12 @@ export const Layout = ({
         statement: 'Sign in with Ethereum to the app.',
         uri: window.location.origin,
         version: '1',
-        chainId: networkData?.chain?.id,
+        chainId: activeChain?.id,
         nonce: await getCsrfToken(),
       });
-      const { data: signature, error } = await signMessage({
+      const signature = await signMessageAsync({
         message: message.prepareMessage(),
       });
-      if (error) {
-        window.alert(error);
-        return;
-      }
       signIn('credentials', {
         message: JSON.stringify(message),
         redirect: false,
