@@ -1,102 +1,92 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { GradientBtn } from 'components/ui/GradientBtn';
-import { DynamicColorBtn } from 'components/ui/DynamicColorBtn';
 import { shorten } from 'utils/commitment';
 import { State } from 'contexts/ContentContext';
 import { ReputationComponent } from './ReputationComponent';
-import networks from 'utils/networks.json';
-
-export enum Action {
-  MINT,
-  REVEAL,
-}
-interface ActionButtonProps {
-  handleAction: (action: Action) => Promise<unknown>;
-  commitmentHash: string | undefined;
-  metadata?: string;
-  mintAddress: string | undefined;
-  disable?: boolean;
-}
-const ipfsToNftLink = (ipfs: string) => {
-  return ipfs.replace('ipfs://', 'https://nftstorage.link/ipfs/');
-};
-const env = process.env.NEXT_PUBLIC_ENV as string;
-const network =
-  env === 'dev'
-    ? networks[1666700000].blockExplorerUrls
-    : networks[1666600000].blockExplorerUrls;
-
-const ActionButton = (props: ActionButtonProps) => {
-  if (props.mintAddress) {
-    const link = props?.metadata && ipfsToNftLink(props.metadata);
-    return (
-      <div className=" items-center">
-        Minted
-        <a href={`${network}tx/${props.mintAddress}`}>
-          <div className="flex-shrink self-center justify-center items-center py-2 underline hover:text-gray-500">
-            Tx: {shorten(props.mintAddress)}
-          </div>
-        </a>
-        {props.metadata && (
-          <a href={link}>
-            <div className="flex-shrink self-center justify-center items-center underline hover:text-gray-500">
-              ipfs: {shorten(props.metadata)}
-            </div>
-          </a>
-        )}
-      </div>
-    );
-  }
-  const { handleAction } = props;
-
-  if (props.commitmentHash) {
-    return (
-      <DynamicColorBtn
-        disabled={props.disable}
-        onClick={async () => await handleAction(Action.MINT)}
-      >
-        Mint NFT
-      </DynamicColorBtn>
-    );
-  }
-
-  return (
-    <DynamicColorBtn
-      disabled={props.disable}
-      onClick={async () => await handleAction(Action.REVEAL)}
-    >
-      Reveal Data
-    </DynamicColorBtn>
-  );
-};
+import { ActionButton, Action } from './ActionButton';
+import { useStopWatch } from 'hooks/useStopWatch';
+import { Signer } from 'ethers';
+import useGroups from 'hooks/useGroup';
+import { useSession } from 'next-auth/react';
+import { useSigner } from 'wagmi';
+import useMint from 'hooks/useMint';
 
 interface GithubContentProps {
   content: State;
-  disable?: boolean;
-  handleAction: ({
-    commitmentId,
-    groupId,
-    groupName,
-    groupNullifier,
-  }: {
-    commitmentId?: string;
-    groupId: string;
-    groupName: string;
-    groupNullifier: string;
-  }) => (action: Action) => Promise<unknown>;
 }
 export const GithubContent = (props: GithubContentProps) => {
-  const { handleAction } = props;
+  const session = useSession();
+  const { seconds, start, reset } = useStopWatch();
+  const { data: signer } = useSigner();
+  const { addGroupStatus, generateIdentityCommitment, joinGroup } = useGroups();
+  const { mintStatus, mint } = useMint();
+  const address = session.data?.address as string;
   const githubRaw = props.content?.github;
+
+  const reveal = async (signer: Signer, groupId: string, groupName: string) => {
+    start();
+    const identityCommitment = await generateIdentityCommitment(
+      signer,
+      groupId,
+    );
+    if (identityCommitment) {
+      // insert to a specific group off-chain
+      console.log('=== address', address);
+      await joinGroup(identityCommitment, groupId, groupName, address);
+    }
+    reset();
+  };
+
+  const proofAndMint = async (
+    signer: Signer,
+    groupId: string,
+    groupNullifier: string,
+    commitmentId?: string,
+  ) => {
+    start();
+    console.log('===mint', groupNullifier);
+    await mint(signer, groupId, groupNullifier, commitmentId);
+    reset();
+  };
+
+  const handleAction =
+    ({
+      commitmentId,
+      groupId,
+      groupName,
+      groupNullifier,
+    }: {
+      commitmentId?: string;
+      groupId: string;
+      groupName: string;
+      groupNullifier: string;
+    }) =>
+    async (action: Action) => {
+      if (!signer) {
+        console.log('==== not ready', signer);
+        return;
+      }
+      switch (action) {
+        case Action.MINT:
+          await proofAndMint(signer, groupId, groupNullifier, commitmentId);
+          break;
+        case Action.REVEAL:
+          await reveal(signer, groupId, groupName);
+          break;
+      }
+    };
+  const disable =
+    (addGroupStatus?.length || 0) > 0 || (mintStatus?.length || 0) > 0;
+
   return (
     <div className="m-6 border-2 border-gray-100 bg-gray-900 rounded-md px-4 py-2 text-left text-white flex flex-col justify-between">
       <div className="flex flex-row justify-between">
         <div className="self-center flex flex-col w-full">
           <p className="text-xl mb-1">Your Github Profile</p>
           <p className="text-sm">
-            Github data will be only stored locally. It will be used for
-            generating your proof.
+            Github data is stored only locally. It will be used for generating
+            your proof.
           </p>
           {githubRaw && (
             <div className="my-3 gap-y-2 grid grid-cols-1 md:grid-cols-2 max-w-3xl">
@@ -139,6 +129,25 @@ export const GithubContent = (props: GithubContentProps) => {
           </GradientBtn>
         </Link>
       </div>
+      <div className="py-3">
+        {mintStatus && (
+          <div className="text-xl self-center flex flex-row">
+            (Typically takes 30 secs)
+            <div className="self-center mx-2">
+              <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
+            </div>
+            {mintStatus}: {seconds} sec passed
+          </div>
+        )}
+        {addGroupStatus && (
+          <div className="text-xl self-center flex flex-row">
+            <div className="self-center mx-2">
+              <div className="animate-spin rounded-full px-2 self-center h-4 w-4 border-t-2 border-b-2 border-indigo-100" />
+            </div>
+            {addGroupStatus}: {seconds} sec passed
+          </div>
+        )}
+      </div>
       {props.content?.contents && (
         <div className="pt-4">
           <p className="text-xl mb-1">Reputation to reveal</p>
@@ -161,7 +170,7 @@ export const GithubContent = (props: GithubContentProps) => {
                   metadata={content.metadata}
                 >
                   <ActionButton
-                    disable={props.disable}
+                    disable={disable}
                     commitmentHash={content.commitmentHash}
                     mintAddress={content.mintAddress}
                     metadata={content.metadata}
