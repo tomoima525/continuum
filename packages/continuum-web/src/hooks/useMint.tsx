@@ -4,7 +4,8 @@ import { abi as ContinuumABI } from 'contracts/Continuum.json';
 import createIdentity from '@interep/identity';
 import { genWitness, genProof, packToSolidityProof } from 'utils/zkp';
 import { useContentState, useContentUpdate } from 'contexts/ContentContext';
-import networks from 'utils/networks.json';
+import { selectedChain } from 'utils/selectedChain';
+
 type ReturnParameters = {
   mint: (
     signer: Signer,
@@ -91,7 +92,7 @@ export default function useMint(): ReturnParameters {
         const solidityProof = packToSolidityProof(pr[0].proof);
         // For now we have testnet only. 1337 is local host
         const contractAddress =
-          networks.selectedChain === '1337'
+          selectedChain === '1337'
             ? '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
             : (process.env.NEXT_PUBLIC_CONTINUUM_CONTRACT as string);
         console.log(contractAddress);
