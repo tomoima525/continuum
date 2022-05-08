@@ -1,5 +1,9 @@
 Continuum is a background checker using Zero Knowledge proof. This project is a proof of concept to showcase how revealing your data works with zero knowledge proof.
 
+<p align="center">
+<img width="700" alt="screen" src="https://user-images.githubusercontent.com/6277118/167317833-e0e478b0-4e0b-41c0-8e58-b34045d14f59.png">
+</p>
+
 # How it works
 
 - Retrieves data from github. This will be stored only locally.
@@ -138,7 +142,7 @@ Input values above to test the contract. You need to add `""` to proof inputs `[
 
 ### Harmony
 
-Testnet: 0x008150FD2e971857058Ee14254439691edb25490
+Testnet: 0x008150FD2e971857058Ee14254439691edb25490  
 Mainet: 0x1BBC601bF0b2C87E18561019488318C3C06daC29
 
 ### Polygon
