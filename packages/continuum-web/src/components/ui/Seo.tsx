@@ -35,14 +35,7 @@ export const Seo = ({
       <meta name="twitter:url" content={path} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta
-        name="twitter:image"
-        content={
-          imgUrl === '/proved-ogp.jpeg'
-            ? 'https://www.assetproved.com/contents/proved-ogp.jpeg'
-            : imgUrl
-        }
-      />
+      <meta name="twitter:image" content={imgUrl} />
       <meta name="twitter:image:alt" content="image" />
       <link rel="canonical" href={path} />
       {/** favicon */}
