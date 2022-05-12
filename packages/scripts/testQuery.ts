@@ -40,6 +40,7 @@ export const nodesQuery = async (
   level: number,
   TableName: string,
 ): Promise<any> => {
+  const result: any[] = [];
   const params: AWS.DynamoDB.DocumentClient.QueryInput = {
     TableName,
     IndexName: 'GroupIndex',
@@ -55,18 +56,22 @@ export const nodesQuery = async (
       ':i': 'MerkleTree',
     },
   };
-  const r = await docClient.query(params).promise();
-  if (!r.Items?.length) {
-    throw new Error('no value');
-  }
-  const convertedData = r.Items?.map(item => {
-    const parent = AWS.DynamoDB.Converter.output(item?.parent);
-    return {
-      ...item,
-      parent,
-    };
-  });
-  return convertedData;
+
+  const query = async (queryParams: AWS.DynamoDB.DocumentClient.QueryInput) => {
+    const r = await docClient.query(queryParams).promise();
+
+    result.push(...(r.Items as any[]));
+
+    if (typeof r.LastEvaluatedKey !== 'undefined') {
+      const newParams = {
+        ...queryParams,
+        ExclusiveStartKey: r.LastEvaluatedKey,
+      };
+      await query(newParams);
+    }
+  };
+  await query(params);
+  return result;
 };
 
 async function main() {
@@ -75,7 +80,7 @@ async function main() {
   // const r = await nodeGetByHash('0', '0', tableName);
   // console.log('===', r);
   const q = await nodesQuery(
-    'Group#8f2cd5673434a49e4b4f52c2d68e8ec8',
+    'Group#a5837a54bccb5eac2bf27089aae67566',
     0,
     tableName,
   );

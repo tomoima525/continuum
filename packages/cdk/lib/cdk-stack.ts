@@ -43,7 +43,7 @@ export class CdkStack extends Stack {
     // API Gateway
     new GroupApiSetup(this, 'Continuum API', {
       appendLeaf: groupLambda.appendLeafLambda,
-      createMerkleProof: groupLambda.createMerkleProofLambda,
+      createMerkleProof: groupLambda.createMerkleProofV2Lambda,
       genMetadata: groupLambda.genMetadataLambda,
       githubAuth: authGithub.authGithubLambda,
       updateCommitment: groupLambda.updateCommitmentLambda,

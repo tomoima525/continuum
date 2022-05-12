@@ -61,11 +61,10 @@ export const handler = async function (
     throw new Error(`The tree is full`);
   }
 
-  // internal id
-  const id = crypto.randomBytes(16).toString('hex');
+  // internal id should be easy to query by level and index
   let node = {
     hash: identityCommitment,
-    id: `${MODEL_MERKLE_TREE}#${id}`,
+    id: `${MODEL_MERKLE_TREE}#${groupId}_0_${currentIndex}`,
     index: currentIndex,
     level: 0,
     groupId,
@@ -120,14 +119,16 @@ export const handler = async function (
           }),
         );
       } else {
+        const parentLevel = level + 1;
+        const parentIndex = Math.floor(currentIndex / 2);
         parentNode = {
           hash: createPoseidonHash(poseidonModule, [
             node.hash,
             node?.siblinghash,
           ]),
-          id: `${MODEL_MERKLE_TREE}#${crypto.randomBytes(16).toString('hex')}`,
-          index: Math.floor(currentIndex / 2),
-          level: level + 1,
+          id: `${MODEL_MERKLE_TREE}#${groupId}_${parentLevel}_${parentIndex}`,
+          index: parentIndex,
+          level: parentLevel,
           groupId,
           groupName,
           siblinghash: null,

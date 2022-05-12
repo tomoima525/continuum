@@ -19,13 +19,21 @@ export const nodesQueryByGroup = async (
       ':i': 'MerkleTree',
     },
   };
-  const r = await docClient.query(params).promise();
-  const convertedData = r.Items?.map(item => {
-    const parent = AWS.DynamoDB.Converter.output(item?.parent);
-    return {
-      ...item,
-      parent,
-    } as MerkleTreeNode;
-  });
-  return convertedData;
+  const result: MerkleTreeNode[] = [];
+  const query = async (queryParams: AWS.DynamoDB.DocumentClient.QueryInput) => {
+    const r = await docClient.query(queryParams).promise();
+    const nodes: MerkleTreeNode[] = (r.Items as MerkleTreeNode[]) || [];
+    result.push(...nodes);
+
+    if (typeof r.LastEvaluatedKey !== 'undefined') {
+      const newParams = {
+        ...queryParams,
+        ExclusiveStartKey: r.LastEvaluatedKey,
+      };
+      await query(newParams);
+    }
+  };
+
+  await query(params);
+  return result;
 };
