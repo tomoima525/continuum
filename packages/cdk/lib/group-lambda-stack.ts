@@ -18,6 +18,7 @@ export interface GroupLambdaStackProps {
 export class GroupLambdaStack extends Construct {
   public readonly appendLeafLambda: lambda_nodejs.NodejsFunction;
   public readonly createMerkleProofLambda: lambda_nodejs.NodejsFunction;
+  public readonly createMerkleProofV2Lambda: lambda_nodejs.NodejsFunction;
   public readonly updateCommitmentLambda: lambda_nodejs.NodejsFunction;
   public readonly genMetadataLambda: lambda_nodejs.NodejsFunction;
 
@@ -94,13 +95,41 @@ export class GroupLambdaStack extends Construct {
         memorySize: 512,
         bundling: {
           externalModules: [
-            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime,
+            '@zk-kit/incremental-merkle-tree',
+            '@zk-kit/protocols',
           ],
         },
         layers: [props.dbUtilLayer],
       },
     );
     props.continuumTable.grantReadWriteData(this.createMerkleProofLambda);
+
+    this.createMerkleProofV2Lambda = new lambda_nodejs.NodejsFunction(
+      this,
+      'createMerkleProofV2',
+      {
+        runtime: lambda.Runtime.NODEJS_14_X,
+        handler: 'handler',
+        entry: path.join(
+          `${__dirname}/../`,
+          'functions',
+          'createMerkleProofV2/index.ts',
+        ),
+        environment: {
+          TableName: props.continuumTable.tableName,
+        },
+        timeout: Duration.seconds(25),
+        memorySize: 512,
+        bundling: {
+          externalModules: [
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+          ],
+        },
+        layers: [props.dbUtilLayer],
+      },
+    );
+    props.continuumTable.grantReadWriteData(this.createMerkleProofV2Lambda);
 
     // Work around to use nft.storage which is supported node 16+
     // https://fusebit.io/blog/run-every-nodejs-version-in-lambda
