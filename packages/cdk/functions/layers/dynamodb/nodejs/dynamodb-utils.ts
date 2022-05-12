@@ -9,6 +9,7 @@ import { nodeQuery } from './nodeQuery';
 import { nodesCount } from './nodesCount';
 import { nodesQuery } from './nodesQuery';
 import { nodesQueryByGroup } from './nodesByGroup';
+import { createNodeGet, nodesTxGet } from './nodesTxGet';
 import { createNodePut, createNodeUpdate, nodesTxWrite } from './nodesTxWrite';
 export {
   commitmentPut,
@@ -22,7 +23,9 @@ export {
   nodesCount,
   nodesQuery,
   nodesQueryByGroup,
+  createNodeGet,
   createNodePut,
   createNodeUpdate,
+  nodesTxGet,
   nodesTxWrite,
 };
