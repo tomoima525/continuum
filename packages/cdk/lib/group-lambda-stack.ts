@@ -152,6 +152,12 @@ export class GroupLambdaStack extends Construct {
         },
         timeout: Duration.minutes(1),
         memorySize: 1536,
+        bundling: {
+          externalModules: [
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+            'chrome-aws-lambda', // Do not include this to prevent `/var/bin/chrome.br` does not exist error
+          ],
+        },
         layers: [props.dbUtilLayer, props.chromeLayer],
       },
     );

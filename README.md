@@ -25,7 +25,7 @@ You can find more details on https://speakerdeck.com/tomoima525/continuum-backgr
 
 # Preparation
 
-Call `yarn install` at the root of the project.
+Call `yarn install` at the root of the project. Note that this package requires node >= 16
 
 ### Github auth
 

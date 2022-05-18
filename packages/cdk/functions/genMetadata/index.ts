@@ -76,7 +76,7 @@ async function storeNFT({
 export const handler = async function (
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> {
-  console.log('==== env', process.env.AWS_EXECUTION_ENV);
+  // console.log('==== env', process.env.AWS_EXECUTION_ENV);
   const requestBody = JSON.parse(event.body || '');
   const address = requestBody?.address as string;
   const groupId = requestBody?.groupId as string;

@@ -58,6 +58,7 @@ export default function useMint(): ReturnParameters {
           wasmFilePath: './semaphore.wasm',
           zkeyFilePath: './semaphore_final.zkey',
         };
+        console.log('=== tt', { groupId, identityCommitment });
         // Step 1 fetch leaves
         const result = await (
           await fetch(
