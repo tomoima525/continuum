@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { NFTStorage, File } from 'nft.storage';
 import screenshot from './screenshot';
 import { groupQuery } from '/opt/nodejs/dynamodb-utils';
+import { URLSearchParams } from 'url';
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
