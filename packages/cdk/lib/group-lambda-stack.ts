@@ -155,7 +155,7 @@ export class GroupLambdaStack extends Construct {
         bundling: {
           externalModules: [
             'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
-            'chrome-aws-lambda', // Do not include this to prevent `/var/bin/chrome.br` does not exist error
+            '@sparticuz/chrome-aws-lambda', // Do not include this to prevent `/var/bin/chrome.br` does not exist error
           ],
         },
         layers: [props.dbUtilLayer, props.chromeLayer],

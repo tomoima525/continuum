@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@sparticuz/chrome-aws-lambda@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@sparticuz/chrome-aws-lambda/-/chrome-aws-lambda-14.1.0.tgz#432de2dd6a8fd3d83025b35df51af40facf77fd1"
+  integrity sha512-Ef6MWjPyiHE94KOPtWP4Gd0KMh4W3MKBtni5gszgBeXQrB8QS3rEr8zZU21Axw9GmGyizTCbSZnYkPcgRB6lAQ==
+  dependencies:
+    lambdafs "^2.0.3"
+
 "@types/node@*":
   version "17.0.31"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.31.tgz#a5bb84ecfa27eec5e1c802c6bbf8139bdb163a5d"
@@ -65,13 +72,6 @@ chownr@^1.1.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
-
-chrome-aws-lambda@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/chrome-aws-lambda/-/chrome-aws-lambda-10.1.0.tgz#ac43b4cdfc1fbb2275c62effada560858099501e"
-  integrity sha512-NZQVf+J4kqG4sVhRm3WNmOfzY0OtTSm+S8rg77pwePa9RCYHzhnzRs8YvNI6L9tALIW6RpmefWiPURt3vURXcw==
-  dependencies:
-    lambdafs "^2.0.3"
 
 concat-map@0.0.1:
   version "0.0.1"
