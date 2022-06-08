@@ -1,3 +1,4 @@
+// From https://github.com/vplasencia/zkGames/blob/main/zkgames-ui/utils/switchNetwork.js
 import networks from './networks.json';
 import { selectedChain } from './selectedChain';
 
