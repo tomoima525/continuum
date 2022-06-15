@@ -13,6 +13,7 @@ export class LambdaLayerSetup extends Construct {
       compatibleRuntimes: [
         lambda.Runtime.NODEJS_12_X,
         lambda.Runtime.NODEJS_14_X,
+        lambda.Runtime.NODEJS_16_X,
       ],
       code: lambda.Code.fromAsset('functions/layers/cdk-crypto'),
       description: 'crypto components',
@@ -22,7 +23,7 @@ export class LambdaLayerSetup extends Construct {
       compatibleRuntimes: [
         lambda.Runtime.NODEJS_12_X,
         lambda.Runtime.NODEJS_14_X,
-        new lambda.Runtime('nodejs16.x', lambda.RuntimeFamily.NODEJS),
+        lambda.Runtime.NODEJS_16_X,
       ],
       code: lambda.Code.fromAsset('functions/layers/dynamodb'),
       description: 'dynamodb utility components',
@@ -32,7 +33,7 @@ export class LambdaLayerSetup extends Construct {
       compatibleRuntimes: [
         lambda.Runtime.NODEJS_12_X,
         lambda.Runtime.NODEJS_14_X,
-        new lambda.Runtime('nodejs16.x', lambda.RuntimeFamily.NODEJS),
+        lambda.Runtime.NODEJS_16_X,
       ],
       code: lambda.Code.fromAsset('functions/layers/chrome'),
       description: 'chrome components',

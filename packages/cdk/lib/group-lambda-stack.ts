@@ -131,34 +131,36 @@ export class GroupLambdaStack extends Construct {
     );
     props.continuumTable.grantReadWriteData(this.createMerkleProofV2Lambda);
 
-    // Work around to use nft.storage which is supported node 16+
-    // https://fusebit.io/blog/run-every-nodejs-version-in-lambda
-    // https://github.com/fusebit/everynode
-    // https://github.com/aws/aws-lambda-base-images/issues/14
-    const customNodeLayer = lambda.LayerVersion.fromLayerVersionArn(
+    this.genMetadataLambda = new lambda_nodejs.NodejsFunction(
       this,
-      'customNode',
-      'arn:aws:lambda:us-west-2:072686360478:layer:node-16_14_2:1',
-    );
-
-    this.genMetadataLambda = new lambda.Function(this, 'genMetadata', {
-      runtime: new lambda.Runtime('nodejs16.x', lambda.RuntimeFamily.NODEJS),
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(
-        path.join(`${__dirname}/../`, 'functions', 'genMetadata'),
-      ),
-      environment: {
-        TableName: props.continuumTable.tableName,
-        SITE_URL:
-          deployEnv() === 'dev'
-            ? 'https://continuum-swart.vercel.app'
-            : 'https://continuum.tomoima525.com',
-        nftstorage_key_id: `continuum_nft_key_${deployEnv()}`,
+      'genMetadata',
+      {
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: 'handler',
+        entry: path.join(
+          `${__dirname}/../`,
+          'functions',
+          'genMetadata/index.ts',
+        ),
+        environment: {
+          TableName: props.continuumTable.tableName,
+          SITE_URL:
+            deployEnv() === 'dev'
+              ? 'https://continuum-swart.vercel.app'
+              : 'https://continuum.tomoima525.com',
+          nftstorage_key_id: `continuum_nft_key_${deployEnv()}`,
+        },
+        timeout: Duration.minutes(1),
+        memorySize: 1536,
+        bundling: {
+          externalModules: [
+            'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+            '@sparticuz/chrome-aws-lambda', // Do not include this to prevent `/var/bin/chrome.br` does not exist error
+          ],
+        },
+        layers: [props.dbUtilLayer, props.chromeLayer],
       },
-      timeout: Duration.minutes(1),
-      memorySize: 1536,
-      layers: [props.dbUtilLayer, customNodeLayer, props.chromeLayer],
-    });
+    );
     props.continuumTable.grantReadWriteData(this.genMetadataLambda);
     this.genMetadataLambda.addToRolePolicy(props.secretManagerPolicy);
   }

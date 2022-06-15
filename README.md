@@ -17,15 +17,15 @@ mainnet page: https://continuum.tomoima525.com/
   - Continuum generates MerkleProof from MerkleTree
   - On the client side, users generate a zkSNARK proof using the MerkleProof
   - Users submit the proof to the contract. Once verified, NFT will be issued.
-<p align="center">
-<img width="1000" alt="Screen Shot 2022-05-09 at 7 13 55 AM" src="https://user-images.githubusercontent.com/6277118/167317950-2158f5a9-7c1b-498c-94d9-c981f2877386.png">
-</p>
+  <p align="center">
+  <img width="1000" alt="Screen Shot 2022-05-09 at 7 13 55 AM" src="https://user-images.githubusercontent.com/6277118/167317950-2158f5a9-7c1b-498c-94d9-c981f2877386.png">
+  </p>
 
 You can find more details on https://speakerdeck.com/tomoima525/continuum-background-checker-with-zero-knowledge-proof or https://www.youtube.com/watch?v=bco4cvXuQUE
 
 # Preparation
 
-Call `yarn install --ignore-engines` at the root of the project. (ipfs contains node v16. It is used in Lambda but not required for the whole project)
+Call `yarn install` at the root of the project. Note that this package requires node >= 16
 
 ### Github auth
 
